@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Nastya Zelenenkaya](https://up.htmlacademy.ru/javascript/18/user/93868).
-* Наставник: `Неизвестно`.
+* Наставник: [Дмитрий Невзоров](https://https://htmlacademy.ru/profile/id1076741).
 
 ---
 
