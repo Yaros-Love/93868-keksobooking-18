@@ -53,8 +53,8 @@ var createOffersArray = function () {
             photos: getRandomArray(PHOTOS)
           },
           location: {
-            x: locationX - IMG_WIDTH / 2,
-            y: locationY - IMG_HEIGHT / 2
+            x: locationX - (IMG_WIDTH / 2),
+            y: locationY - (IMG_HEIGHT / 2)
           }
         }
     );
@@ -62,13 +62,13 @@ var createOffersArray = function () {
 
   return offersArray;
 };
-var similarArray = createOffersArray();
+
 
 var pinTemplate = document.querySelector('#pin')
   .content
   .querySelector('.map__pin');
 
-var renderPin = function () {
+var renderPin = function (similarArray) {
   var pinElement = pinTemplate.cloneNode(true);
 
   pinElement.setAttribute('style', 'left: ' + similarArray.location.x + 'px' + '; ' + 'top:' + similarArray.location.y + 'px');
@@ -77,6 +77,8 @@ var renderPin = function () {
 
   return pinElement;
 };
+
+var similarArray = createOffersArray();
 
 var fragment = document.createDocumentFragment();
 for (var i = 0; i < similarArray.length; i++) {
