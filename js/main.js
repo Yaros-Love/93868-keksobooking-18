@@ -29,11 +29,18 @@ var getRandomArray = function (arr) {
   return randomArr;
 };
 
+var getRandomInt = function (min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
 var createOffersArray = function () {
   var offersArray = [];
   for (var i = 1; i <= AMOUNT_OFFER; i++) {
-    var locationX = Math.floor(Math.random() * (LOCATION_X_MAX - LOCATION_X_MIN)) + LOCATION_X_MIN;
-    var locationY = Math.floor(Math.random() * (LOCATION_Y_MAX - LOCATION_Y_MIN)) + LOCATION_Y_MIN;
+    var locationX = getRandomInt(LOCATION_X_MIN, LOCATION_X_MAX);
+    var locationY = getRandomInt(LOCATION_Y_MIN, LOCATION_Y_MAX);
     offersArray.push(
         {
           author: {
@@ -41,13 +48,13 @@ var createOffersArray = function () {
           },
           offer: {
             title: TITLE,
-            adress: locationX + ', ' + locationY,
+            address: locationX + ', ' + locationY,
             price: PRICE,
-            type: TYPES[Math.floor(Math.random() * TYPES.length)],
-            rooms: Math.floor(Math.random() * (3 - 1)) + 1,
-            guests: Math.floor(Math.random() * (3 - 1)) + 1,
-            checkin: CHECKINS[Math.floor(Math.random() * CHECKINS.length)],
-            checkout: CHECKOUTS[Math.floor(Math.random() * CHECKOUTS.length)],
+            type: TYPES[getRandomInt(0, TYPES.length)],
+            rooms: getRandomInt(1, 3),
+            guests: getRandomInt(1, 3),
+            checkin: CHECKINS[getRandomInt(0, CHECKINS.length)],
+            checkout: CHECKOUTS[getRandomInt(0, CHECKOUTS.length)],
             features: getRandomArray(FEATURES),
             description: DESCRIPTION,
             photos: getRandomArray(PHOTOS)
@@ -63,26 +70,24 @@ var createOffersArray = function () {
   return offersArray;
 };
 
+var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 
-var pinTemplate = document.querySelector('#pin')
-  .content
-  .querySelector('.map__pin');
-
-var renderPin = function (similarArray) {
+var renderPin = function (obj) {
   var pinElement = pinTemplate.cloneNode(true);
 
-  pinElement.setAttribute('style', 'left: ' + similarArray.location.x + 'px' + '; ' + 'top:' + similarArray.location.y + 'px');
-  pinElement.setAttribute('src', similarArray.author.avatar);
-  pinElement.setAttribute('alt', similarArray.offer.title);
+  pinElement.style.left = obj.location.x + 'px';
+  pinElement.style.top = obj.location.y + 'px';
+  pinElement.querySelector('img').setAttribute('src', obj.author.avatar);
+  pinElement.querySelector('img').setAttribute('alt', obj.offer.title);
 
   return pinElement;
 };
 
-var similarArray = createOffersArray();
+var similarAdsArray = createOffersArray();
 
 var fragment = document.createDocumentFragment();
-for (var i = 0; i < similarArray.length; i++) {
-  fragment.appendChild(renderPin(similarArray[i]));
+for (var i = 0; i < similarAdsArray.length; i++) {
+  fragment.appendChild(renderPin(similarAdsArray[i]));
 }
 
 var similarListPin = map.querySelector('.map__pins');
