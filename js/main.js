@@ -94,14 +94,23 @@ var renderPin = function (obj) {
 };
 
 var similarAdsArray = createOffersArray();
-var fragment = document.createDocumentFragment();
-for (var i = 0; i < similarAdsArray.length; i++) {
-  fragment.appendChild(renderPin(similarAdsArray[i]));
-}
 
-var similarListPin = map.querySelector('.map__pins');
-similarListPin.appendChild(fragment);
+// цункция встаквки пинов
+var insertPinsInMap = function (arr) {
+  var fragment = document.createDocumentFragment();
+  var similarListPin = map.querySelector('.map__pins');
 
+  if (arr.length !== 0) {
+    for (var i = 0; i < similarAdsArray.length; i++) {
+      fragment.appendChild(renderPin(similarAdsArray[i]));
+    }
+    similarListPin.appendChild(fragment);
+  }
+
+  return similarListPin;
+};
+
+// функция генерации карточки
 var renderCard = function (obj) {
   var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
   var cardElement = cardTemplate.cloneNode(true);
@@ -109,7 +118,7 @@ var renderCard = function (obj) {
   //  получаем дефолтную колекцию li и удаляем
   var childrenLi = popupFeatures.children;
 
-  for (i = childrenLi.length - 1; i >= 0; i--) {
+  for (var i = childrenLi.length - 1; i >= 0; i--) {
     var child = childrenLi[i];
 
     child.parentElement.removeChild(child);
@@ -143,4 +152,5 @@ var renderCard = function (obj) {
 };
 
 var randomItemCardInArray = renderCard(similarAdsArray[getRandomInt(0, similarAdsArray.length - 1)]);
-map.insertBefore(randomItemCardInArray, similarListPin);
+map.appendChild(randomItemCardInArray);
+map.appendChild(insertPinsInMap(similarAdsArray));
