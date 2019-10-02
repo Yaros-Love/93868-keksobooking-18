@@ -1,10 +1,8 @@
 'use strict';
 
 var map = document.querySelector('.map');
-map.classList.remove('map--faded');
 
 var widthBlock = map.querySelector('.map__pins').offsetWidth;
-
 var AMOUNT_OFFER = 8;
 var PRICE = 5200;
 var TYPES = ['palace', 'flat', 'house', 'bungalo'];
@@ -19,6 +17,8 @@ var LOCATION_X_MIN = IMG_WIDTH;
 var LOCATION_X_MAX = widthBlock - IMG_WIDTH;
 var LOCATION_Y_MIN = 130 + IMG_HEIGHT;
 var LOCATION_Y_MAX = 630 - IMG_HEIGHT;
+var ESC_KEYCODE = 27;
+var ENTER_KEYCODE = 13;
 
 var getRandomArray = function (arr) {
   var randomArr = [];
@@ -95,7 +95,7 @@ var renderPin = function (obj) {
 
 var similarAdsArray = createOffersArray();
 
-// цункция встаквки пинов
+// функция встаквки пинов
 var insertPinsInMap = function (arr) {
   var fragment = document.createDocumentFragment();
   var similarListPin = map.querySelector('.map__pins');
@@ -151,6 +151,94 @@ var renderCard = function (obj) {
   return cardElement;
 };
 
-var randomItemCardInArray = renderCard(similarAdsArray[getRandomInt(0, similarAdsArray.length - 1)]);
-map.appendChild(randomItemCardInArray);
-map.appendChild(insertPinsInMap(similarAdsArray));
+// var randomItemCardInArray = renderCard(similarAdsArray[getRandomInt(0, similarAdsArray.length - 1)]);
+// map.appendChild(randomItemCardInArray);
+// map.appendChild(insertPinsInMap(similarAdsArray));
+
+
+var fieldsets = document.querySelectorAll('fieldset');
+for (var i = 0; i < fieldsets.length; i++) {
+  fieldsets[i].setAttribute('disabled', 'disabled');
+}
+
+var resetDisable = function (obj) {
+  for (var i = 0; i < obj.length; i++) {
+    obj[i].removeAttribute('disabled', 'disabled');
+  }
+};
+
+var getAddressValue = function (obj) {
+  var address = getComputedStyle(obj);
+  var x = parseInt(address.left);
+  var y = parseInt(address.top);
+  x = x + IMG_WIDTH;
+  y = y + IMG_HEIGHT;
+  var value = '' + x + ', ' + y + '';
+
+  return value;
+};
+
+
+var pinMain = map.querySelector('.map__pin--main');
+var inputAddress = document.querySelector('#address');
+inputAddress.value = getAddressValue(pinMain);
+
+pinMain.addEventListener('mousedown', function () {
+  resetDisable(fieldsets);
+  map.classList.remove('map--faded');
+});
+
+pinMain.addEventListener('keydown', function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE) {
+    resetDisable(fieldsets);
+    map.classList.remove('map--faded');
+  }
+});
+
+var form = document.querySelector('.ad-form');
+var roomNumberSelect = document.querySelector('#room_number');
+var roomValue = roomNumberSelect.value;
+var capacitySelect = document.querySelector('#capacity');
+var capacityValue = capacitySelect.selectedIndex;
+console.log(capacityValue, capacitySelect.selectedIndex = 2);
+
+
+var checkValidationRooms = function (target) {
+  var constrainsValidation = {
+    '1' : {
+      'guests' : ['1'],
+      'errorText' : '1 комната для 1 гостя'
+    },
+    '2': {
+      'guests' : ['1', '2'],
+      'errorText' : '2 комнаты для 1 или для 2 гостей'
+    },
+    '3' : {
+      'guests ': ['1', '2', '3'],
+      'errorText' : '3 комнаты для 1, 2 или 3 гостей'
+    },
+    '100': {
+      'guests' : ['0'],
+      'errorText' : '100 не для гостей'
+    }
+  };
+  var guests = capacityValue.value;
+  roomNumberSelect.setCustomValidity(constrainsValidation[target].guests.includes(guests) ? '' : constrainsValidation[target].errorText);
+
+ };
+
+ roomNumberSelect.addEventListener('input', function (evt) {
+   console.log(evt);
+   var target = evt.currentTarget.value
+   console.log(target);
+   if (target === 1) {
+     capacitySelect.option[1].setAttribute('disabled', 'disabled');
+   }
+   checkValidationRooms(target);
+ });
+
+ capacitySelect.addEventListener('input', function (evt) {
+   console.log(evt);
+   var target = evt.currentTarget.value
+   console.log(target);
+ });
