@@ -199,46 +199,78 @@ var form = document.querySelector('.ad-form');
 var roomNumberSelect = document.querySelector('#room_number');
 var roomValue = roomNumberSelect.value;
 var capacitySelect = document.querySelector('#capacity');
-var capacityValue = capacitySelect.selectedIndex;
-console.log(capacityValue, capacitySelect.selectedIndex = 2);
+capacitySelect.selectedIndex = 2;
 
+// var checkValidationRooms = function (target) {
+//   var constrainsValidation = {
+//     '1' : {
+//       'guests' : ['1'],
+//       'errorText' : '1 комната для 1 гостя'
+//     },
+//     '2': {
+//       'guests' : ['1', '2'],
+//       'errorText' : '2 комнаты для 1 или для 2 гостей'
+//     },
+//     '3' : {
+//       'guests ': ['1', '2', '3'],
+//       'errorText' : '3 комнаты для 1, 2 или 3 гостей'
+//     },
+//     '100': {
+//       'guests' : ['0'],
+//       'errorText' : '100 не для гостей'
+//     }
+//   };
+//   var guests = capacityValue.value;
+//   roomNumberSelect.setCustomValidity(constrainsValidation[target].guests.includes(guests) ? '' : constrainsValidation[target].errorText);
+//
+//  };
 
-var checkValidationRooms = function (target) {
-  var constrainsValidation = {
-    '1' : {
-      'guests' : ['1'],
-      'errorText' : '1 комната для 1 гостя'
-    },
-    '2': {
-      'guests' : ['1', '2'],
-      'errorText' : '2 комнаты для 1 или для 2 гостей'
-    },
-    '3' : {
-      'guests ': ['1', '2', '3'],
-      'errorText' : '3 комнаты для 1, 2 или 3 гостей'
-    },
-    '100': {
-      'guests' : ['0'],
-      'errorText' : '100 не для гостей'
+var makeDisabledOptionsCapacity = function (target) {
+  var optionArr = capacitySelect.children;
+
+  for (var j = 0; j < optionArr.length; j++) {
+    optionArr[j].removeAttribute('disabled', 'disabled');
+  }
+
+  for (var i = 0; i < optionArr.length; i++) {
+    if (optionArr[i].value > target ||  optionArr[i].value == 0) {
+      optionArr[i].setAttribute('disabled', 'disabled');
     }
-  };
-  var guests = capacityValue.value;
-  roomNumberSelect.setCustomValidity(constrainsValidation[target].guests.includes(guests) ? '' : constrainsValidation[target].errorText);
+    if (target == 100 && optionArr[i].value == 0) {
+      for (var p = 0; p < optionArr.length; p++) {
+        optionArr[p].disabled = true;
+      }
+      optionArr[i].disabled = false;
+    }
+  }
+};
 
- };
+var makeDisabledOptionsRooms = function (target) {
+  var optionArr = roomNumberSelect.children;
+
+  for (var j = 0; j < optionArr.length; j++) {
+    optionArr[j].removeAttribute('disabled', 'disabled');
+  }
+
+  for (var i = 0; i < optionArr.length; i++) {
+    if (optionArr[i].value < target ||  optionArr[i].value == 100) {
+      optionArr[i].setAttribute('disabled', 'disabled');
+    }
+    if (target == 0 && optionArr[i].value == 100) {
+      for (var p = 0; p < optionArr.length; p++) {
+        optionArr[p].disabled = true;
+      }
+      optionArr[i].disabled = false;
+    }
+  }
+};
 
  roomNumberSelect.addEventListener('input', function (evt) {
-   console.log(evt);
-   var target = evt.currentTarget.value
-   console.log(target);
-   if (target === 1) {
-     capacitySelect.option[1].setAttribute('disabled', 'disabled');
-   }
-   checkValidationRooms(target);
+   var target = evt.currentTarget.value;
+   makeDisabledOptionsCapacity(target);
  });
 
  capacitySelect.addEventListener('input', function (evt) {
-   console.log(evt);
    var target = evt.currentTarget.value
-   console.log(target);
+   makeDisabledOptionsRooms(target);
  });
