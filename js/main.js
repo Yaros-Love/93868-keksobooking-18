@@ -17,7 +17,6 @@ var LOCATION_X_MIN = IMG_WIDTH;
 var LOCATION_X_MAX = widthBlock - IMG_WIDTH;
 var LOCATION_Y_MIN = 130 + IMG_HEIGHT;
 var LOCATION_Y_MAX = 630 - IMG_HEIGHT;
-var ESC_KEYCODE = 27;
 var ENTER_KEYCODE = 13;
 
 var getRandomArray = function (arr) {
@@ -155,22 +154,21 @@ var renderCard = function (obj) {
 // map.appendChild(randomItemCardInArray);
 // map.appendChild(insertPinsInMap(similarAdsArray));
 
-
 var fieldsets = document.querySelectorAll('fieldset');
 for (var i = 0; i < fieldsets.length; i++) {
   fieldsets[i].setAttribute('disabled', 'disabled');
 }
 
 var resetDisable = function (obj) {
-  for (var i = 0; i < obj.length; i++) {
-    obj[i].removeAttribute('disabled', 'disabled');
+  for (var j = 0; j < obj.length; j++) {
+    obj[j].removeAttribute('disabled', 'disabled');
   }
 };
 
 var getAddressValue = function (obj) {
   var address = getComputedStyle(obj);
-  var x = parseInt(address.left);
-  var y = parseInt(address.top);
+  var x = parseInt(address.left, 10);
+  var y = parseInt(address.top, 10);
   x = x + IMG_WIDTH;
   y = y + IMG_HEIGHT;
   var value = '' + x + ', ' + y + '';
@@ -195,9 +193,7 @@ pinMain.addEventListener('keydown', function (evt) {
   }
 });
 
-var form = document.querySelector('.ad-form');
 var roomNumberSelect = document.querySelector('#room_number');
-var roomValue = roomNumberSelect.value;
 var capacitySelect = document.querySelector('#capacity');
 capacitySelect.selectedIndex = 2;
 
@@ -227,16 +223,22 @@ capacitySelect.selectedIndex = 2;
 
 var makeDisabledOptionsCapacity = function (target) {
   var optionArr = capacitySelect.children;
+  var compareArr = roomNumberSelect.children;
+  target = parseInt(target, 10);
 
+  // сброс всех disabled
   for (var j = 0; j < optionArr.length; j++) {
     optionArr[j].removeAttribute('disabled', 'disabled');
   }
+  for (var g = 0; g < compareArr.length; g++) {
+    compareArr[g].removeAttribute('disabled', 'disabled');
+  }
 
   for (var i = 0; i < optionArr.length; i++) {
-    if (optionArr[i].value > target ||  optionArr[i].value == 0) {
+    if (optionArr[i].value > target || optionArr[i].value === '0') {
       optionArr[i].setAttribute('disabled', 'disabled');
     }
-    if (target == 100 && optionArr[i].value == 0) {
+    if (target === 100 && optionArr[i].value === '0') {
       for (var p = 0; p < optionArr.length; p++) {
         optionArr[p].disabled = true;
       }
@@ -247,16 +249,22 @@ var makeDisabledOptionsCapacity = function (target) {
 
 var makeDisabledOptionsRooms = function (target) {
   var optionArr = roomNumberSelect.children;
+  var compareArr = capacitySelect.children;
+  target = parseInt(target, 10);
 
+  // сброс всех disabled
   for (var j = 0; j < optionArr.length; j++) {
     optionArr[j].removeAttribute('disabled', 'disabled');
   }
+  for (var g = 0; g < compareArr.length; g++) {
+    compareArr[g].removeAttribute('disabled', 'disabled');
+  }
 
   for (var i = 0; i < optionArr.length; i++) {
-    if (optionArr[i].value < target ||  optionArr[i].value == 100) {
+    if (optionArr[i].value < target || optionArr[i].value === '100') {
       optionArr[i].setAttribute('disabled', 'disabled');
     }
-    if (target == 0 && optionArr[i].value == 100) {
+    if (target === 0 && optionArr[i].value === '100') {
       for (var p = 0; p < optionArr.length; p++) {
         optionArr[p].disabled = true;
       }
@@ -265,12 +273,12 @@ var makeDisabledOptionsRooms = function (target) {
   }
 };
 
- roomNumberSelect.addEventListener('input', function (evt) {
-   var target = evt.currentTarget.value;
-   makeDisabledOptionsCapacity(target);
- });
+roomNumberSelect.addEventListener('input', function (evt) {
+  var target = evt.currentTarget.value;
+  makeDisabledOptionsCapacity(target);
+});
 
- capacitySelect.addEventListener('input', function (evt) {
-   var target = evt.currentTarget.value
-   makeDisabledOptionsRooms(target);
- });
+capacitySelect.addEventListener('input', function (evt) {
+  var target = evt.currentTarget.value;
+  makeDisabledOptionsRooms(target);
+});
