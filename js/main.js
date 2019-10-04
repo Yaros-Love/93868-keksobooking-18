@@ -179,10 +179,14 @@ var getAddressValue = function (obj) {
   return value;
 };
 
-
 var pinMain = map.querySelector('.map__pin--main');
-var inputAddress = document.querySelector('#address');
 var adForm = document.querySelector('.ad-form');
+var inputAddress = adForm.querySelector('#address');
+var title = adForm.querySelector('#title');
+
+title.minLength = '30';
+title.maxLength = '100';
+title.required = true;
 
 inputAddress.setAttribute('readonly', 'readonly');
 inputAddress.value = getAddressValue(pinMain);
@@ -201,6 +205,7 @@ pinMain.addEventListener('keydown', function (evt) {
   }
 });
 
+
 var timeIn = adForm.querySelector('#timein');
 var timeOut = adForm.querySelector('#timeout');
 
@@ -208,6 +213,7 @@ var setTimeSynch = function (option) {
   timeOut.options[option].selected = true;
   timeIn.options[option].selected = true;
 };
+
 
 timeIn.addEventListener('input', function (evt) {
   var option = evt.currentTarget.selectedIndex;
