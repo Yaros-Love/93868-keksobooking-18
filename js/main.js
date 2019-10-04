@@ -3,20 +3,8 @@
 var map = document.querySelector('.map');
 
 var widthBlock = map.querySelector('.map__pins').offsetWidth;
-var AMOUNT_OFFER = 8;
-var PRICE = 5200;
-var TYPES = ['palace', 'flat', 'house', 'bungalo'];
-var CHECKINS = ['12:00', '13:00', '14:00'];
-var CHECKOUTS = ['12:00', '13:00', '14:00'];
-var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
-var DESCRIPTION = ['Великолепный Дворец в центре Токио. Подходит как туристам, так и бизнесменам. Квартира полностью укомплектована и недавно отремонтирована.'];
-var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
 var IMG_WIDTH = 40;
 var IMG_HEIGHT = 70;
-var LOCATION_X_MIN = IMG_WIDTH;
-var LOCATION_X_MAX = widthBlock - IMG_WIDTH;
-var LOCATION_Y_MIN = 130 + IMG_HEIGHT;
-var LOCATION_Y_MAX = 630 - IMG_HEIGHT;
 var ENTER_KEYCODE = 13;
 
 var getRandomArray = function (arr) {
@@ -47,6 +35,21 @@ var createOffersArray = function () {
   };
 
   var offersArray = [];
+
+  var AMOUNT_OFFER = 8;
+  var PRICE = 5200;
+  var TYPES = ['palace', 'flat', 'house', 'bungalo'];
+  var CHECKINS = ['12:00', '13:00', '14:00'];
+  var CHECKOUTS = ['12:00', '13:00', '14:00'];
+  var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
+  var DESCRIPTION = ['Великолепный Дворец в центре Токио. Подходит как туристам, так и бизнесменам. Квартира полностью укомплектована и недавно отремонтирована.'];
+  var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
+  var LOCATION_X_MIN = IMG_WIDTH;
+  var LOCATION_X_MAX = widthBlock - IMG_WIDTH;
+  var LOCATION_Y_MIN = 130 + IMG_HEIGHT;
+  var LOCATION_Y_MAX = 630 - IMG_HEIGHT;
+
+
   for (var i = 1; i <= AMOUNT_OFFER; i++) {
     var locationX = getRandomInt(LOCATION_X_MIN, LOCATION_X_MAX);
     var locationY = getRandomInt(LOCATION_Y_MIN, LOCATION_Y_MAX);
@@ -179,23 +182,124 @@ var getAddressValue = function (obj) {
 
 var pinMain = map.querySelector('.map__pin--main');
 var inputAddress = document.querySelector('#address');
+var adForm = document.querySelector('.ad-form');
+
+inputAddress.setAttribute('readonly', 'readonly');
 inputAddress.value = getAddressValue(pinMain);
 
 pinMain.addEventListener('mousedown', function () {
   resetDisable(fieldsets);
   map.classList.remove('map--faded');
+  adForm.classList.remove('ad-form--disabled');
 });
 
 pinMain.addEventListener('keydown', function (evt) {
   if (evt.keyCode === ENTER_KEYCODE) {
     resetDisable(fieldsets);
     map.classList.remove('map--faded');
+    adForm.classList.remove('ad-form--disabled');
   }
 });
 
+var timeIn = adForm.querySelector('#timein');
+var timeOut = adForm.querySelector('#timeout');
+
+var setTimeSynch = function (option) {
+  timeOut.options[option].selected = true;
+  timeIn.options[option].selected = true;
+};
+
+timeIn.addEventListener('input', function (evt) {
+  var option = evt.currentTarget.selectedIndex;
+  setTimeSynch(option);
+});
+
+timeOut.addEventListener('input', function (evt) {
+  var option = evt.currentTarget.selectedIndex;
+  setTimeSynch(option);
+});
+
+var price = adForm.querySelector('#price');
+var typeSelect = adForm.querySelector('#type');
+
+price.setAttribute('required', 'required');
+price.setAttribute('max', '1000000');
+typeSelect.value = 'house';
+price.setAttribute('min', '5000');
+
+var setMinValuePlaceholder = function (option) {
+  if (option === 'bungalo') {
+    price.setAttribute('min', '0');
+    price.setAttribute('placeholder', '0');
+  } else if (option === 'flat') {
+    price.setAttribute('min', '1000');
+    price.setAttribute('placeholder', '1000');
+  } else if (option === 'house') {
+    price.setAttribute('min', '5000');
+    price.setAttribute('placeholder', '5000');
+  } else if (option === 'palace') {
+    price.setAttribute('min', '10000');
+    price.setAttribute('placeholder', '10000');
+  }
+};
+
+typeSelect.addEventListener('input', function (evt) {
+  var option = evt.currentTarget.value;
+  setMinValuePlaceholder(option);
+  console.log(option);
+});
+
+var numberRoomExeption = '100';
+var capasityExeption = '0';
 var roomNumberSelect = document.querySelector('#room_number');
 var capacitySelect = document.querySelector('#capacity');
-capacitySelect.selectedIndex = 2;
+roomNumberSelect.value = 1;
+
+var renederCapasity = function (target) {
+  var options = capacitySelect.children;
+  var room = target;
+  for (var i = 0; i < options.length; i++) {
+    if ((room >= options[i].value) && (options[i].value !== capasityExeption)) {
+      options[i].disabled = false;
+    } else if ((room === numberRoomExeption) && (options[i].value === capasityExeption)) {
+      options[i].disabled = false;
+      options[i].selected = true;
+    } else {
+      options[i].disabled = true;
+      if (options[i].selected) {
+        options[i].selected = false;
+      }
+    }
+  }
+};
+
+var renederRoom = function (target) {
+  var options = roomNumberSelect.children;
+  var capasity = target;
+  for (var i = 0; i < options.length; i++) {
+    if ((capasity <= options[i].value) && (options[i].value !== numberRoomExeption)) {
+      options[i].disabled = false;
+    } else if ((capasity === capasityExeption) && (options[i].value === numberRoomExeption)) {
+      options[i].disabled = false;
+      options[i].selected = true;
+    } else {
+      options[i].disabled = true;
+      if (options[i].selected) {
+        options[i].selected = false;
+      }
+    }
+  }
+};
+
+roomNumberSelect.addEventListener('input', function (evt) {
+  var target = evt.currentTarget.value;
+  renederCapasity(target);
+});
+
+capacitySelect.addEventListener('input', function (evt) {
+  var target = evt.currentTarget.value;
+  renederRoom(target);
+});
 
 // var checkValidationRooms = function (target) {
 //   var constrainsValidation = {
@@ -220,65 +324,3 @@ capacitySelect.selectedIndex = 2;
 //   roomNumberSelect.setCustomValidity(constrainsValidation[target].guests.includes(guests) ? '' : constrainsValidation[target].errorText);
 //
 //  };
-
-var makeDisabledOptionsCapacity = function (target) {
-  var optionArr = capacitySelect.children;
-  var compareArr = roomNumberSelect.children;
-  target = parseInt(target, 10);
-
-  // сброс всех disabled
-  for (var j = 0; j < optionArr.length; j++) {
-    optionArr[j].removeAttribute('disabled', 'disabled');
-  }
-  for (var g = 0; g < compareArr.length; g++) {
-    compareArr[g].removeAttribute('disabled', 'disabled');
-  }
-
-  for (var i = 0; i < optionArr.length; i++) {
-    if (optionArr[i].value > target || optionArr[i].value === '0') {
-      optionArr[i].setAttribute('disabled', 'disabled');
-    }
-    if (target === 100 && optionArr[i].value === '0') {
-      for (var p = 0; p < optionArr.length; p++) {
-        optionArr[p].disabled = true;
-      }
-      optionArr[i].disabled = false;
-    }
-  }
-};
-
-var makeDisabledOptionsRooms = function (target) {
-  var optionArr = roomNumberSelect.children;
-  var compareArr = capacitySelect.children;
-  target = parseInt(target, 10);
-
-  // сброс всех disabled
-  for (var j = 0; j < optionArr.length; j++) {
-    optionArr[j].removeAttribute('disabled', 'disabled');
-  }
-  for (var g = 0; g < compareArr.length; g++) {
-    compareArr[g].removeAttribute('disabled', 'disabled');
-  }
-
-  for (var i = 0; i < optionArr.length; i++) {
-    if (optionArr[i].value < target || optionArr[i].value === '100') {
-      optionArr[i].setAttribute('disabled', 'disabled');
-    }
-    if (target === 0 && optionArr[i].value === '100') {
-      for (var p = 0; p < optionArr.length; p++) {
-        optionArr[p].disabled = true;
-      }
-      optionArr[i].disabled = false;
-    }
-  }
-};
-
-roomNumberSelect.addEventListener('input', function (evt) {
-  var target = evt.currentTarget.value;
-  makeDisabledOptionsCapacity(target);
-});
-
-capacitySelect.addEventListener('input', function (evt) {
-  var target = evt.currentTarget.value;
-  makeDisabledOptionsRooms(target);
-});
