@@ -234,79 +234,87 @@ typeSelect.value = 'house';
 price.setAttribute('min', '5000');
 
 var setMinValuePlaceholder = function (option) {
-  if (option === 'bungalo') {
-    price.setAttribute('min', '0');
-    price.setAttribute('placeholder', '0');
-  } else if (option === 'flat') {
-    price.setAttribute('min', '1000');
-    price.setAttribute('placeholder', '1000');
-  } else if (option === 'house') {
-    price.setAttribute('min', '5000');
-    price.setAttribute('placeholder', '5000');
-  } else if (option === 'palace') {
-    price.setAttribute('min', '10000');
-    price.setAttribute('placeholder', '10000');
-  }
+  var typeHouse = {
+    'palace': {
+      'text': 'Дворец',
+      'minPrice': 10000
+    },
+    'house': {
+      'text': 'Дом',
+      'minPrice': 5000
+    },
+    'flat': {
+      'text': 'Квартира',
+      'minPrice': 1000
+    },
+    'bungalo': {
+      'text': 'Бунгало',
+      'minPrice': 0
+    }
+  };
+
+  price.setAttribute('min', typeHouse[option].minPrice);
+  price.setAttribute('placeholder', typeHouse[option].minPrice);
 };
 
 typeSelect.addEventListener('input', function (evt) {
   var option = evt.currentTarget.value;
   setMinValuePlaceholder(option);
-  console.log(option);
 });
 
-var numberRoomExeption = '100';
-var capasityExeption = '0';
+var numberRoomException = '100';
+var capacityException = '0';
 var roomNumberSelect = document.querySelector('#room_number');
 var capacitySelect = document.querySelector('#capacity');
-roomNumberSelect.value = 1;
+roomNumberSelect.value = '1';
+capacitySelect.value = '1';
 
-var renederCapasity = function (target) {
+var renderCapacity = function (room) {
   var options = capacitySelect.children;
-  var room = target;
   for (var i = 0; i < options.length; i++) {
-    if ((room >= options[i].value) && (options[i].value !== capasityExeption)) {
+    if ((room >= options[i].value) && (options[i].value !== capacityException)) {
       options[i].disabled = false;
-    } else if ((room === numberRoomExeption) && (options[i].value === capasityExeption)) {
+    } else if ((room === numberRoomException) && (options[i].value === capacityException)) {
       options[i].disabled = false;
-      options[i].selected = true;
     } else {
       options[i].disabled = true;
-      if (options[i].selected) {
-        options[i].selected = false;
-      }
     }
   }
 };
 
-var renederRoom = function (target) {
-  var options = roomNumberSelect.children;
-  var capasity = target;
-  for (var i = 0; i < options.length; i++) {
-    if ((capasity <= options[i].value) && (options[i].value !== numberRoomExeption)) {
-      options[i].disabled = false;
-    } else if ((capasity === capasityExeption) && (options[i].value === numberRoomExeption)) {
-      options[i].disabled = false;
-      options[i].selected = true;
-    } else {
-      options[i].disabled = true;
-      if (options[i].selected) {
-        options[i].selected = false;
-      }
-    }
+var checkValidation = function (room, capacityValue) {
+  if ((room >= capacityValue) && (capacityValue !== capacityException) && (room !== numberRoomException)) {
+    capacitySelect.setCustomValidity('');
+  } else if ((room === numberRoomException) && (capacityValue === capacityException)) {
+    capacitySelect.setCustomValidity('');
+  } else if ((room === numberRoomException) && (capacityValue !== capacityException) || (room !== numberRoomException) && (capacityValue === '0')) {
+    capacitySelect.setCustomValidity('Не для гостей - 100 комнат');
+  } else {
+    capacitySelect.setCustomValidity('Количество человек не должно превышать количество комнат!');
   }
 };
 
 roomNumberSelect.addEventListener('input', function (evt) {
-  var target = evt.currentTarget.value;
-  renederCapasity(target);
+  var room = evt.currentTarget.value;
+  var capacityValue = capacitySelect.value;
+  renderCapacity(room);
+  checkValidation(room, capacityValue);
 });
 
 capacitySelect.addEventListener('input', function (evt) {
-  var target = evt.currentTarget.value;
-  renederRoom(target);
+  var capacityValue = evt.currentTarget.value;
+  var room = roomNumberSelect.value;
+  checkValidation(room, capacityValue);
 });
 
+// var form = document.querySelector('.ad-form');
+// form.addEventListener('submit', function (evt) {
+//   if (capacitySelect.disabled = true) {
+//     evt.preventDefault();
+//     setCustomValidity("error");
+//     console.log("error");
+//   }
+// });
 // var checkValidationRooms = function (target) {
 //   var constrainsValidation = {
 //     '1' : {
