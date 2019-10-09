@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  window.renderCard = function (obj) {
+  var renderCard = function (obj) {
     var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
     var cardElement = cardTemplate.cloneNode(true);
     var popupFeatures = cardElement.querySelector('.popup__features');
@@ -41,4 +41,7 @@
     return cardElement;
   };
 
+  window.card = {
+    renderCard: renderCard
+  };
 })();

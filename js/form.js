@@ -1,15 +1,9 @@
 'use strict';
 
 (function () {
-  var adForm = document.querySelector('.ad-form');
+  var adForm = window.map.adForm;
   var inputAddress = adForm.querySelector('#address');
   var title = adForm.querySelector('#title');
-
-  window.form = {
-    adForm: adForm
-
-  };
-
   var pinMain = window.map.pinMain;
 
   var getAddressValue = function (obj) {

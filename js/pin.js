@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  window.renderPin = function (obj) {
+  var renderPin = function (obj) {
     var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
     var pinElement = pinTemplate.cloneNode(true);
     var pinElementImg = pinElement.querySelector('img');
@@ -12,5 +12,9 @@
     pinElementImg.setAttribute('alt', obj.offer.title);
 
     return pinElement;
+  };
+
+  window.pin = {
+    renderPin: renderPin
   };
 })();
