@@ -2,16 +2,19 @@
 
 (function () {
   var adForm = window.map.adForm;
+  var pinMain = window.map.pinMain;
+  var IMG_WIDTH = window.util.IMG_WIDTH;
+  var ENTER_KEYCODE = window.util.IMG_HEIGHT;
+
   var inputAddress = adForm.querySelector('#address');
   var title = adForm.querySelector('#title');
-  var pinMain = window.map.pinMain;
 
   var getAddressValue = function (obj) {
     var address = getComputedStyle(obj);
     var x = parseInt(address.left, 10);
     var y = parseInt(address.top, 10);
-    x = x + window.util.IMG_WIDTH;
-    y = y + window.util.IMG_HEIGHT;
+    x = x + IMG_WIDTH;
+    y = y + IMG_HEIGHT;
     var value = '' + x + ', ' + y + '';
 
     return value;
