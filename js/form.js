@@ -4,7 +4,7 @@
   var adForm = window.map.adForm;
   var pinMain = window.map.pinMain;
   var IMG_WIDTH = window.util.IMG_WIDTH;
-  var ENTER_KEYCODE = window.util.IMG_HEIGHT;
+  var IMG_HEIGHT = window.util.IMG_HEIGHT;
 
   var inputAddress = adForm.querySelector('#address');
   var title = adForm.querySelector('#title');
