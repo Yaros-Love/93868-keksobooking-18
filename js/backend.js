@@ -26,9 +26,9 @@
 
     xhr.open('GET', URL);
     xhr.send();
+  };
 
-    window.backend = {
-      load: load
-    };
+  window.backend = {
+    load: load
   };
 })();

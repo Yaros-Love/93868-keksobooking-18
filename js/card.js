@@ -15,8 +15,6 @@
         child.parentElement.removeChild(child);
       }
     };
-
-
     removeCildren(childrenLi);
     // создаем новую коллекцию li вставляем во фрагмент
     var createLi = function (arr) {
@@ -31,19 +29,17 @@
       return fragmentLi;
     };
 
+    // вставка фотографий в карточку, требует доработки
     var createImg = function (arr) {
-      console.log(arr);
       var div = cardElement.querySelector('.popup__photos');
       var img = div.querySelector('.popup__photo');
       var fragment = document.createDocumentFragment();
 
-      console.log(img);
       for (var j = 0; j < arr.length; j++) {
         var node = img.cloneNode(true);
         node.src = arr[j];
         fragment.appendChild(node);
       }
-      console.log(fragment);
       return fragment;
     };
 
@@ -58,8 +54,6 @@
     cardElement.querySelector('.popup__description').textContent = obj.offer.description;
     // cardElement.querySelector('.popup__photo').setAttribute('src', obj.offer.photos);
     cardTemplate.querySelector('.popup__photos').appendChild(createImg(obj.offer.photos));
-    console.log(obj.offer.photos);
-
     cardElement.querySelector('.popup__avatar').setAttribute('src', obj.author.avatar);
 
     return cardElement;
