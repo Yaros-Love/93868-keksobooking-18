@@ -8,11 +8,14 @@
     //  получаем дефолтную колекцию li и удаляем
     var childrenLi = popupFeatures.children;
 
-    for (var i = childrenLi.length - 1; i >= 0; i--) {
-      var child = childrenLi[i];
+    var removeCildren = function (arr) {
+      for (var i = arr.length - 1; i >= 0; i--) {
+        var child = arr[i];
 
-      child.parentElement.removeChild(child);
-    }
+        child.parentElement.removeChild(child);
+      }
+    };
+    removeCildren(childrenLi);
     // создаем новую коллекцию li вставляем во фрагмент
     var createLi = function (arr) {
       var liElement = cardTemplate.querySelector('.popup__feature');
@@ -26,6 +29,20 @@
       return fragmentLi;
     };
 
+    // вставка фотографий в карточку, требует доработки
+    var createImg = function (arr) {
+      var div = cardElement.querySelector('.popup__photos');
+      var img = div.querySelector('.popup__photo');
+      var fragment = document.createDocumentFragment();
+
+      for (var j = 0; j < arr.length; j++) {
+        var node = img.cloneNode(true);
+        node.src = arr[j];
+        fragment.appendChild(node);
+      }
+      return fragment;
+    };
+
     cardElement.querySelector('.popup__title').textContent = obj.offer.title;
     cardElement.querySelector('.popup__text--address').textContent = obj.offer.address;
     cardElement.querySelector('.popup__text--price').textContent = obj.offer.price + '₽/ночь';
@@ -35,7 +52,8 @@
     // вставляем фрагмент (новую коллекцию li)
     popupFeatures.appendChild(createLi(obj.offer.features));
     cardElement.querySelector('.popup__description').textContent = obj.offer.description;
-    cardElement.querySelector('.popup__photo').setAttribute('src', obj.offer.photos);
+    // cardElement.querySelector('.popup__photo').setAttribute('src', obj.offer.photos);
+    cardTemplate.querySelector('.popup__photos').appendChild(createImg(obj.offer.photos));
     cardElement.querySelector('.popup__avatar').setAttribute('src', obj.author.avatar);
 
     return cardElement;
