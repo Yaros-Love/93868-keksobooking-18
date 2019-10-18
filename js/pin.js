@@ -15,17 +15,16 @@
     pinElementImg.setAttribute('alt', obj.offer.title);
 
     var onPinClick = function () {
-      var mapPins = document.querySelectorAll('.map__pin');
+      var mapPins = document.querySelectorAll('.map__pin--active');
       var mapCard = document.querySelector('.map__card');
       for (var i = 0; i < mapPins.length; i++) {
         mapPins[i].classList.remove('map__pin--active');
       }
       pinElement.classList.add('map__pin--active');
-      if (mapCard === null) {
-        map.appendChild(renderCard(obj));
-      } else {
+      map.appendChild(renderCard(obj));
+
+      if (mapCard !== null) {
         mapCard.remove();
-        map.appendChild(renderCard(obj));
       }
     };
 

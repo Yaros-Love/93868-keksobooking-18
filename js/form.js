@@ -1,28 +1,30 @@
 'use strict';
 
 (function () {
-  var adForm = window.map.adForm;
-  var pinMain = window.map.pinMain;
+  var adForm = document.querySelector('.ad-form');
+  var pinMain = document.querySelector('.map__pin--main');
   var IMG_WIDTH = window.util.IMG_WIDTH;
   var IMG_HEIGHT = window.util.IMG_HEIGHT;
+  var MIN_LENGTH = 30;
+  var MAX_LENGTH = 100;
 
   var inputAddress = adForm.querySelector('#address');
   var title = adForm.querySelector('#title');
 
-  var getAddressValue = function (obj) {
-    var address = getComputedStyle(obj);
+  var getAddressValue = function (pinMain) {
+    var address = getComputedStyle(pinMain);
     var x = parseInt(address.left, 10);
     var y = parseInt(address.top, 10);
-    x = x + IMG_WIDTH;
-    y = y + IMG_HEIGHT;
-    var value = '' + x + ', ' + y + '';
+    x += IMG_WIDTH;
+    y += IMG_HEIGHT;
+    var value = x + ', ' + y;
 
     return value;
   };
 
 
-  title.minLength = '30';
-  title.maxLength = '100';
+  title.minLength = MIN_LENGTH;
+  title.maxLength = MAX_LENGTH;
   title.required = true;
 
   inputAddress.setAttribute('readonly', 'readonly');
