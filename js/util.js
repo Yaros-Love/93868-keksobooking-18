@@ -4,6 +4,7 @@
   var IMG_WIDTH = 40;
   var IMG_HEIGHT = 70;
   var ENTER_KEYCODE = 13;
+  var ESC_KEYCODE = 27;
 
   var getRandomArray = function (arr) {
     var randomArr = [];
@@ -25,6 +26,7 @@
     IMG_WIDTH: IMG_WIDTH,
     IMG_HEIGHT: IMG_HEIGHT,
     ENTER_KEYCODE: ENTER_KEYCODE,
+    ESC_KEYCODE: ESC_KEYCODE,
     getRandomInt: getRandomInt,
     getRandomArray: getRandomArray
   };
