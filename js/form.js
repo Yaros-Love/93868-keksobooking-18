@@ -11,8 +11,8 @@
   var inputAddress = adForm.querySelector('#address');
   var title = adForm.querySelector('#title');
 
-  var getAddressValue = function (pinMain) {
-    var address = getComputedStyle(pinMain);
+  var getAddressValue = function (pin) {
+    var address = getComputedStyle(pin);
     var x = parseInt(address.left, 10);
     var y = parseInt(address.top, 10);
     x += IMG_WIDTH;

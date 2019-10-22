@@ -3,6 +3,7 @@
 (function () {
   var renderPin = window.pin.renderPin;
   var ENTER_KEYCODE = window.util.ENTER_KEYCODE;
+  var PINS_AMOUNT = 5;
   var load = window.backend.load;
 
   var main = document.querySelector('main');
@@ -12,6 +13,9 @@
   var fieldsets = document.querySelectorAll('fieldset');
   var mapPins = map.querySelector('.map__pins');
 
+  var filter = document.querySelector('.map__filters');
+  var housingType = filter.querySelector('#housing-type');
+  var mapCard = document.querySelector('.map__card');
 
   var resetDisable = function (fieldsetsArr) {
     for (var j = 0; j < fieldsetsArr.length; j++) {
@@ -21,14 +25,28 @@
 
   var insertPinsInMap = function (dataObj) {
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i < dataObj.length; i++) {
+    var takeNumber = dataObj.length > PINS_AMOUNT ? PINS_AMOUNT : dataObj.length;
+    for (var i = 0; i < takeNumber; i++) {
       fragment.appendChild(renderPin(dataObj[i]));
     }
 
     return fragment;
   };
 
+  var pins = [];
+  var updatePins = function (value) {
+    var typeHouse = pins.filter(function (it) {
+        if (it.offer.type === value || value === 'any') {
+          return it;
+        }
+    });
+    mapPins.innerHTML = '';
+    mapPins.appendChild(insertPinsInMap(typeHouse));
+  };
+
   var successHandler = function (data) {
+    pins = data;
+    console.log(pins);
     resetDisable(fieldsets);
     map.classList.remove('map--faded');
     adForm.classList.remove('ad-form--disabled');
@@ -62,10 +80,16 @@
     }
   });
 
+  housingType.addEventListener('change', function (evt) {
+    var value = evt.target.value;
+    updatePins(value);
+    if (mapCard !== null) {
+      mapCard.remove();
+    }
+  });
+
   window.map = {
     insertPinsInMap: insertPinsInMap,
-    map: map,
-    pinMain: pinMain,
-    adForm: adForm
+    map: map
   };
 })();

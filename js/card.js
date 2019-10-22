@@ -11,9 +11,8 @@
     var popupPhotosImg = cardElement.querySelector('.popup__photo');
     //  получаем дефолтную колекцию li и удаляем
     var removeChilds = function (node) {
-      var last;
-      while (last = node.lastChild) {
-        node.removeChild(last);
+      while (node.firstChild) {
+        node.firstChild.remove();
       }
     };
     removeChilds(popupFeatures);

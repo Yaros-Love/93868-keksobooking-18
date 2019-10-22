@@ -4,6 +4,7 @@
   var renderCard = window.card.renderCard;
 
   var renderPin = function (obj) {
+    console.log(obj);
     var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
     var pinElement = pinTemplate.cloneNode(true);
     var pinElementImg = pinElement.querySelector('img');
