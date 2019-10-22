@@ -15,7 +15,6 @@
 
   var filter = document.querySelector('.map__filters');
   var housingType = filter.querySelector('#housing-type');
-  var mapCard = document.querySelector('.map__card');
 
   var resetDisable = function (fieldsetsArr) {
     for (var j = 0; j < fieldsetsArr.length; j++) {
@@ -36,9 +35,7 @@
   var pins = [];
   var updatePins = function (value) {
     var typeHouse = pins.filter(function (it) {
-        if (it.offer.type === value || value === 'any') {
-          return it;
-        }
+      return it.offer.type === value || value === 'any';
     });
     mapPins.innerHTML = '';
     mapPins.appendChild(insertPinsInMap(typeHouse));
@@ -46,7 +43,6 @@
 
   var successHandler = function (data) {
     pins = data;
-    console.log(pins);
     resetDisable(fieldsets);
     map.classList.remove('map--faded');
     adForm.classList.remove('ad-form--disabled');
@@ -83,6 +79,7 @@
   housingType.addEventListener('change', function (evt) {
     var value = evt.target.value;
     updatePins(value);
+    var mapCard = document.querySelector('.map__card');
     if (mapCard !== null) {
       mapCard.remove();
     }
