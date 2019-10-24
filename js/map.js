@@ -3,8 +3,7 @@
 (function () {
   var renderPin = window.pin.renderPin;
   var ENTER_KEYCODE = window.util.ENTER_KEYCODE;
-  // var renderCard = window.card.renderCard;
-  // var getRandomInt = window.util.getRandomInt;
+  var PINS_AMOUNT = 5;
   var load = window.backend.load;
 
   var main = document.querySelector('main');
@@ -12,48 +11,42 @@
   var map = document.querySelector('.map');
   var pinMain = map.querySelector('.map__pin--main');
   var fieldsets = document.querySelectorAll('fieldset');
+  var mapPins = map.querySelector('.map__pins');
 
-  var resetDisable = function (obj) {
-    for (var j = 0; j < obj.length; j++) {
-      obj[j].removeAttribute('disabled', 'disabled');
+  var filter = document.querySelector('.map__filters');
+  var housingType = filter.querySelector('#housing-type');
+
+  var resetDisable = function (fieldsetsArr) {
+    for (var j = 0; j < fieldsetsArr.length; j++) {
+      fieldsetsArr[j].removeAttribute('disabled', 'disabled');
     }
   };
 
-  var insertPinsInMap = function (arr) {
+  var insertPinsInMap = function (dataObj) {
     var fragment = document.createDocumentFragment();
-    var similarListPin = map.querySelector('.map__pins');
-
-    if (arr.length !== 0) {
-      for (var i = 0; i < arr.length; i++) {
-        fragment.appendChild(renderPin(arr[i]));
-      }
-      similarListPin.appendChild(fragment);
+    var takeNumber = dataObj.length > PINS_AMOUNT ? PINS_AMOUNT : dataObj.length;
+    for (var i = 0; i < takeNumber; i++) {
+      fragment.appendChild(renderPin(dataObj[i]));
     }
 
-    return similarListPin;
+    return fragment;
+  };
+
+  var pins = [];
+  var updatePins = function (value) {
+    var typeHouse = pins.filter(function (it) {
+      return it.offer.type === value || value === 'any';
+    });
+    mapPins.innerHTML = '';
+    mapPins.appendChild(insertPinsInMap(typeHouse));
   };
 
   var successHandler = function (data) {
+    pins = data;
     resetDisable(fieldsets);
     map.classList.remove('map--faded');
     adForm.classList.remove('ad-form--disabled');
-    map.appendChild(insertPinsInMap(data));
-
-    //  появление карточки при клике на пин пока работает не очень
-    // var pins = map.querySelector('.map__pins');
-    // pins.addEventListener('click', function (evt) {
-    //   var target = evt.target
-    //   var src = target.getAttribute('src');
-    //   var userNumber = getNumberFromString(src);
-    //   console.log(data);
-    //
-    //   if (target.tagName === 'IMG' && data.src != 'default') {
-    //     // searchObj(data, src);
-    //     var randomItemCardInArray = renderCard(data[userNumber]);
-    //     map.appendChild(randomItemCardInArray);
-    //
-    //     console.log('click');
-    //   }
+    mapPins.appendChild(insertPinsInMap(data));
   };
 
   var errorHandler = function (err) {
@@ -83,23 +76,17 @@
     }
   });
 
-  //  функция вытаскивает из строки число
-  // var getNumberFromString = function (str) {
-  //   var emptyStr = '';
-  //   for (var i in str) {
-  //     if ( parseInt(str[i]) ) {
-  //       emptyStr += str[i];
-  //     }
-  //   }
-  //   parseInt(emptyStr);
-  //
-  //   return parseInt(emptyStr);
-  // };
+  housingType.addEventListener('change', function (evt) {
+    var value = evt.target.value;
+    updatePins(value);
+    var mapCard = document.querySelector('.map__card');
+    if (mapCard !== null) {
+      mapCard.remove();
+    }
+  });
 
   window.map = {
     insertPinsInMap: insertPinsInMap,
-    map: map,
-    pinMain: pinMain,
-    adForm: adForm
+    map: map
   };
 })();
