@@ -2,33 +2,14 @@
 
 (function () {
   var adForm = document.querySelector('.ad-form');
-  var pinMain = document.querySelector('.map__pin--main');
-  var IMG_WIDTH = window.util.IMG_WIDTH;
-  var IMG_HEIGHT = window.util.IMG_HEIGHT;
+
+
   var MIN_LENGTH = 30;
   var MAX_LENGTH = 100;
-
-  var inputAddress = adForm.querySelector('#address');
   var title = adForm.querySelector('#title');
-
-  var getAddressValue = function (pin) {
-    var address = getComputedStyle(pin);
-    var x = parseInt(address.left, 10);
-    var y = parseInt(address.top, 10);
-    x += IMG_WIDTH;
-    y += IMG_HEIGHT;
-    var value = x + ', ' + y;
-
-    return value;
-  };
-
-
   title.minLength = MIN_LENGTH;
   title.maxLength = MAX_LENGTH;
   title.required = true;
-
-  inputAddress.setAttribute('readonly', 'readonly');
-  inputAddress.value = getAddressValue(pinMain);
 
 
   var timeIn = adForm.querySelector('#timein');
@@ -38,8 +19,6 @@
     timeOut.options[option].selected = true;
     timeIn.options[option].selected = true;
   };
-
-
   timeIn.addEventListener('input', function (evt) {
     var option = evt.currentTarget.selectedIndex;
     setTimeSynch(option);
@@ -49,6 +28,7 @@
     var option = evt.currentTarget.selectedIndex;
     setTimeSynch(option);
   });
+
 
   var price = adForm.querySelector('#price');
   var typeSelect = adForm.querySelector('#type');
