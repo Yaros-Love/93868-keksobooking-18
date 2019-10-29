@@ -14,22 +14,21 @@
     var y = parseInt(address.top, 10);
     x += Math.round(PIN_WIDTH / 2);
     y += PIN_HEIGHT;
-    var value = x + ', ' + y;
 
-    return value;
+    return new Coordinate(x, y);
   };
 
   var setInputAdress = function () {
     var inputAddress = document.querySelector('#address');
 
     inputAddress.setAttribute('readonly', 'readonly');
-    inputAddress.value = getAddressValue(pinMain);
+    inputAddress.value = getAddressValue(pinMain).x + ', ' + getAddressValue(pinMain).y;
   };
 
   var mainPinHandler = function (evt) {
 
     var mapRect = map.getBoundingClientRect();
-    var LOCATION_X_MIN = (mapRect.x - mapRect.x) + PIN_WIDTH / 2;
+    var LOCATION_X_MIN = (mapRect.right - mapRect.width - mapRect.x) + PIN_WIDTH / 2;
     var LOCATION_X_MAX = mapRect.width - PIN_WIDTH / 2;
     var LOCATION_Y_MIN = 130;
     var LOCATION_Y_MAX = 630 - PIN_HEIGHT;
@@ -44,11 +43,9 @@
       startCoords.setX(moveEvt.clientX);
       startCoords.setY(moveEvt.clientY);
 
-      var endCoords = new Coordinate(startCoords.x - mapRect.x, -(mapRect.top - startCoords.y));
-
+      var endCoords = new Coordinate(startCoords.x - mapRect.x, startCoords.y - mapRect.y);
       if ((endCoords.x >= LOCATION_X_MIN) && (endCoords.x <= LOCATION_X_MAX)) {
         pinMain.style.left = (pinMain.offsetLeft - shift.x) + 'px';
-
       }
       if ((endCoords.y >= LOCATION_Y_MIN) && (endCoords.y <= LOCATION_Y_MAX)) {
         pinMain.style.top = (pinMain.offsetTop - shift.y) + 'px';
