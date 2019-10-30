@@ -5,8 +5,9 @@
   var ENTER_KEYCODE = window.util.ENTER_KEYCODE;
   var PINS_AMOUNT = 5;
   var load = window.backend.load;
-  var mainPinHandler = window.mainPinMove.mainPinHandler;
+  var movePinTo = window.mainPinMove.movePinTo;
   var setInputAdress = window.mainPinMove.setInputAdress;
+  var clickInMapCoords = window.mainPinMove.clickInMapCoords;
   var removeChilds = window.card.removeChilds;
 
   var main = document.querySelector('main');
@@ -82,9 +83,9 @@
   };
   pinMain.addEventListener('mousedown', onMainPinClick);
 
-  pinMain.addEventListener('mousedown', function (evt) {
+  map.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
-    mainPinHandler(evt);
+    clickInMapCoords(evt.clientX, evt.clientY);
   });
 
   pinMain.addEventListener('keydown', function (evt) {
