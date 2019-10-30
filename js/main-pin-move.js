@@ -46,12 +46,12 @@
       var endCoords = new Coordinate(startCoords.x - mapRect.x, startCoords.y - mapRect.y);
       if ((endCoords.x >= LOCATION_X_MIN) && (endCoords.x <= LOCATION_X_MAX)) {
         pinMain.style.left = (pinMain.offsetLeft - shift.x) + 'px';
+        setInputAdress();
       }
       if ((endCoords.y >= LOCATION_Y_MIN) && (endCoords.y <= LOCATION_Y_MAX)) {
         pinMain.style.top = (pinMain.offsetTop - shift.y) + 'px';
+        setInputAdress();
       }
-
-      setInputAdress();
     };
 
     var onMouseUp = function (upEvt) {
