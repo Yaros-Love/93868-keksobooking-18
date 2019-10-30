@@ -61,6 +61,8 @@
     errorButton.addEventListener('click', function () {
       document.location.reload(true);
     });
+
+    // добавить обработчики на click/keydown ESC
   };
 
   var onMainPinClick = function () {

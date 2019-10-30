@@ -2,6 +2,9 @@
 
 (function () {
   var save = window.backend.save;
+  var load = window.backend.load;
+  var errorHandler = window.map.errorHandler;
+  var onMainPinClick = window.map.onMainPinClick;
   var adForm = document.querySelector('.ad-form');
   var pinMain = document.querySelector('.map__pin--main');
   var IMG_WIDTH = window.util.IMG_WIDTH;
@@ -133,21 +136,8 @@
     var room = roomNumberSelect.value;
     checkValidation(room, capacityValue);
   });
-  //временно здесь
+
   var main = document.querySelector('main');
-  var errorHandler = function (err) {
-    var errorTemplate = document.querySelector('#error');
-    var errorElement = errorTemplate.content.cloneNode(true);
-    var errorMessage = errorElement.querySelector('.error__message');
-    var errorButton = errorElement.querySelector('.error__button');
-    errorMessage.innerHTML = err + ', упс!';
-
-    main.prepend(errorElement);
-
-    errorButton.addEventListener('click', function () {
-      document.location.reload(true);
-    });
-  };
 
   var successMessageHandler = function () {
     var successTemplate = document.querySelector('#success');
@@ -172,22 +162,38 @@
   var setDefaultStatePage = function () {
     var fieldsets = document.querySelectorAll('fieldset');
     var map = document.querySelector('.map');
+    var mapPins = document.querySelector('.map__pins');
+    //временно здесь, потом эта функция будет вынесена
+    var removeChilds = function (node) {
+      while (node.firstChild) {
+        node.firstChild.remove();
+      }
+    };
+    //
 
     var setDisable = function (fieldsetsArr) {
       for (var j = 0; j < fieldsetsArr.length; j++) {
-        fieldsetsArr[j].addAttribute('disabled', 'disabled');
+        fieldsetsArr[j].setAttribute('disabled', 'disabled');
       }
     };
+
+    removeChilds(mapPins);
+    setDisable(fieldsets);
+
     map.classList.add('map--faded');
     adForm.classList.add('ad-form--disabled');
+    mapPins.appendChild(pinMain);
+
+    pinMain.addEventListener('click', onMainPinClick);
   };
 
   adForm.addEventListener('submit', function (evt) {
     save(new FormData(adForm), function () {
       setDefaultStatePage();
       successMessageHandler();
+      adForm.reset();
     }, errorHandler);
+
     evt.preventDefault();
   });
-
 })();
