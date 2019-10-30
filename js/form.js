@@ -6,6 +6,7 @@
   var pinMain = document.querySelector('.map__pin--main');
   var IMG_WIDTH = window.util.IMG_WIDTH;
   var IMG_HEIGHT = window.util.IMG_HEIGHT;
+  var ESC_KEYCODE = window.util.ESC_KEYCODE;
   var MIN_LENGTH = 30;
   var MAX_LENGTH = 100;
 
@@ -161,6 +162,11 @@
     };
 
     main.addEventListener('click', successClose);
+    document.addEventListener('keydown', function (evt) {
+      if (evt.keyCode === ESC_KEYCODE) {
+        successClose();
+      }
+    });
   };
 
   var setDefaultStatePage = function () {
