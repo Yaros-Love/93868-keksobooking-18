@@ -1,6 +1,7 @@
 'use strict';
 
 (function () {
+  var save = window.backend.save;
   var adForm = document.querySelector('.ad-form');
   var pinMain = document.querySelector('.map__pin--main');
   var IMG_WIDTH = window.util.IMG_WIDTH;
@@ -130,6 +131,57 @@
     var capacityValue = evt.currentTarget.value;
     var room = roomNumberSelect.value;
     checkValidation(room, capacityValue);
+  });
+  //временно здесь
+  var main = document.querySelector('main');
+  var errorHandler = function (err) {
+    var errorTemplate = document.querySelector('#error');
+    var errorElement = errorTemplate.content.cloneNode(true);
+    var errorMessage = errorElement.querySelector('.error__message');
+    var errorButton = errorElement.querySelector('.error__button');
+    errorMessage.innerHTML = err + ', упс!';
+
+    main.prepend(errorElement);
+
+    errorButton.addEventListener('click', function () {
+      document.location.reload(true);
+    });
+  };
+
+  var successMessageHandler = function () {
+    var successTemplate = document.querySelector('#success');
+    var successElement = successTemplate.content.cloneNode(true);
+
+    main.prepend(successElement);
+
+    var successClose = function () {
+      var message = main.querySelector('.success');
+      message.remove();
+      main.removeEventListener('click', successClose);
+    };
+
+    main.addEventListener('click', successClose);
+  };
+
+  var setDefaultStatePage = function () {
+    var fieldsets = document.querySelectorAll('fieldset');
+    var map = document.querySelector('.map');
+
+    var setDisable = function (fieldsetsArr) {
+      for (var j = 0; j < fieldsetsArr.length; j++) {
+        fieldsetsArr[j].addAttribute('disabled', 'disabled');
+      }
+    };
+    map.classList.add('map--faded');
+    adForm.classList.add('ad-form--disabled');
+  };
+
+  adForm.addEventListener('submit', function (evt) {
+    save(new FormData(adForm), function () {
+      setDefaultStatePage();
+      successMessageHandler();
+    }, errorHandler);
+    evt.preventDefault();
   });
 
 })();
