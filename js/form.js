@@ -1,15 +1,14 @@
 'use strict';
 
 (function () {
+  var ESC_KEYCODE = window.util.ESC_KEYCODE;
   var save = window.backend.save;
   var load = window.backend.load;
   var errorHandler = window.map.errorHandler;
   var onMainPinClick = window.map.onMainPinClick;
+  var removeChilds = window.card.removeChilds;
   var adForm = document.querySelector('.ad-form');
-  var pinMain = document.querySelector('.map__pin--main');
-  var IMG_WIDTH = window.util.IMG_WIDTH;
-  var IMG_HEIGHT = window.util.IMG_HEIGHT;
-  var ESC_KEYCODE = window.util.ESC_KEYCODE;
+
   var MIN_LENGTH = 30;
   var MAX_LENGTH = 100;
   var title = adForm.querySelector('#title');
@@ -25,11 +24,11 @@
     timeOut.options[option].selected = true;
     timeIn.options[option].selected = true;
   };
+
   timeIn.addEventListener('input', function (evt) {
     var option = evt.currentTarget.selectedIndex;
     setTimeSynch(option);
   });
-
   timeOut.addEventListener('input', function (evt) {
     var option = evt.currentTarget.selectedIndex;
     setTimeSynch(option);
@@ -141,16 +140,14 @@
   };
 
   var setDefaultStatePage = function () {
+    var pinMain = document.querySelector('.map__pin--main');
     var fieldsets = document.querySelectorAll('fieldset');
     var map = document.querySelector('.map');
     var mapPins = document.querySelector('.map__pins');
-    //временно здесь, потом эта функция будет вынесена
-    var removeChilds = function (node) {
-      while (node.firstChild) {
-        node.firstChild.remove();
-      }
+    var pinMainDefaultCoords = {
+      left: 570,
+      top: 375
     };
-    //
 
     var setDisable = function (fieldsetsArr) {
       for (var j = 0; j < fieldsetsArr.length; j++) {
@@ -164,8 +161,9 @@
     map.classList.add('map--faded');
     adForm.classList.add('ad-form--disabled');
     mapPins.appendChild(pinMain);
-
-    pinMain.addEventListener('click', onMainPinClick);
+    pinMain.style.left = pinMainDefaultCoords.left + 'px';
+    pinMain.style.top = pinMainDefaultCoords.top + 'px';
+    pinMain.addEventListener('mousedown', onMainPinClick);
   };
 
   adForm.addEventListener('submit', function (evt) {

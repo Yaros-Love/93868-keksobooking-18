@@ -99,6 +99,7 @@
 
   window.map = {
     insertPinsInMap: insertPinsInMap,
+    onMainPinClick: onMainPinClick,
     map: map
   };
 })();
