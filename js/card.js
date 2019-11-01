@@ -1,6 +1,12 @@
 'use strict';
 
 (function () {
+  var removeChilds = function (node) {
+    while (node.firstChild) {
+      node.firstChild.remove();
+    }
+  };
+
   var renderCard = function (dataObj) {
     var ESC_KEYCODE = window.util.ESC_KEYCODE;
 
@@ -10,11 +16,6 @@
     var popupPhotos = cardElement.querySelector('.popup__photos');
     var popupPhotosImg = cardElement.querySelector('.popup__photo');
     //  получаем дефолтную колекцию li и удаляем
-    var removeChilds = function (node) {
-      while (node.firstChild) {
-        node.firstChild.remove();
-      }
-    };
     removeChilds(popupFeatures);
     // создаем новую коллекцию li вставляем во фрагмент
     var createLi = function (featureArr) {
@@ -70,6 +71,7 @@
   };
 
   window.card = {
-    renderCard: renderCard
+    renderCard: renderCard,
+    removeChilds: removeChilds
   };
 })();

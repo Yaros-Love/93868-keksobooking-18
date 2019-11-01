@@ -22,6 +22,7 @@
     return Math.floor(Math.random() * (max - min + 1)) + min;
   };
 
+
   window.util = {
     IMG_WIDTH: IMG_WIDTH,
     IMG_HEIGHT: IMG_HEIGHT,
