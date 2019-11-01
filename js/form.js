@@ -3,7 +3,6 @@
 (function () {
   var ESC_KEYCODE = window.util.ESC_KEYCODE;
   var save = window.backend.save;
-  var load = window.backend.load;
   var errorHandler = window.map.errorHandler;
   var onMainPinClick = window.map.onMainPinClick;
   var removeChilds = window.card.removeChilds;
