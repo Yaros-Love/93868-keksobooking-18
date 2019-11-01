@@ -1,9 +1,15 @@
 'use strict';
 
 (function () {
+  var save = window.backend.save;
+  var load = window.backend.load;
+  var errorHandler = window.map.errorHandler;
+  var onMainPinClick = window.map.onMainPinClick;
   var adForm = document.querySelector('.ad-form');
-
-
+  var pinMain = document.querySelector('.map__pin--main');
+  var IMG_WIDTH = window.util.IMG_WIDTH;
+  var IMG_HEIGHT = window.util.IMG_HEIGHT;
+  var ESC_KEYCODE = window.util.ESC_KEYCODE;
   var MIN_LENGTH = 30;
   var MAX_LENGTH = 100;
   var title = adForm.querySelector('#title');
@@ -112,4 +118,63 @@
     checkValidation(room, capacityValue);
   });
 
+  var main = document.querySelector('main');
+
+  var successMessageHandler = function () {
+    var successTemplate = document.querySelector('#success');
+    var successElement = successTemplate.content.cloneNode(true);
+
+    main.prepend(successElement);
+
+    var successClose = function () {
+      var message = main.querySelector('.success');
+      message.remove();
+      main.removeEventListener('click', successClose);
+    };
+
+    main.addEventListener('click', successClose);
+    document.addEventListener('keydown', function (evt) {
+      if (evt.keyCode === ESC_KEYCODE) {
+        successClose();
+      }
+    });
+  };
+
+  var setDefaultStatePage = function () {
+    var fieldsets = document.querySelectorAll('fieldset');
+    var map = document.querySelector('.map');
+    var mapPins = document.querySelector('.map__pins');
+    //временно здесь, потом эта функция будет вынесена
+    var removeChilds = function (node) {
+      while (node.firstChild) {
+        node.firstChild.remove();
+      }
+    };
+    //
+
+    var setDisable = function (fieldsetsArr) {
+      for (var j = 0; j < fieldsetsArr.length; j++) {
+        fieldsetsArr[j].setAttribute('disabled', 'disabled');
+      }
+    };
+
+    removeChilds(mapPins);
+    setDisable(fieldsets);
+
+    map.classList.add('map--faded');
+    adForm.classList.add('ad-form--disabled');
+    mapPins.appendChild(pinMain);
+
+    pinMain.addEventListener('click', onMainPinClick);
+  };
+
+  adForm.addEventListener('submit', function (evt) {
+    save(new FormData(adForm), function () {
+      setDefaultStatePage();
+      successMessageHandler();
+      adForm.reset();
+    }, errorHandler);
+
+    evt.preventDefault();
+  });
 })();
