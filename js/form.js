@@ -1,8 +1,12 @@
 'use strict';
 
 (function () {
+  var ESC_KEYCODE = window.util.ESC_KEYCODE;
+  var save = window.backend.save;
+  var errorHandler = window.map.errorHandler;
+  var onMainPinClick = window.map.onMainPinClick;
+  var removeChilds = window.card.removeChilds;
   var adForm = document.querySelector('.ad-form');
-
 
   var MIN_LENGTH = 30;
   var MAX_LENGTH = 100;
@@ -19,11 +23,11 @@
     timeOut.options[option].selected = true;
     timeIn.options[option].selected = true;
   };
+
   timeIn.addEventListener('input', function (evt) {
     var option = evt.currentTarget.selectedIndex;
     setTimeSynch(option);
   });
-
   timeOut.addEventListener('input', function (evt) {
     var option = evt.currentTarget.selectedIndex;
     setTimeSynch(option);
@@ -112,4 +116,62 @@
     checkValidation(room, capacityValue);
   });
 
+  var main = document.querySelector('main');
+
+  var successMessageHandler = function () {
+    var successTemplate = document.querySelector('#success');
+    var successElement = successTemplate.content.cloneNode(true);
+
+    main.prepend(successElement);
+
+    var successClose = function () {
+      var message = main.querySelector('.success');
+      message.remove();
+      main.removeEventListener('click', successClose);
+    };
+
+    main.addEventListener('click', successClose);
+    document.addEventListener('keydown', function (evt) {
+      if (evt.keyCode === ESC_KEYCODE) {
+        successClose();
+      }
+    });
+  };
+
+  var setDefaultStatePage = function () {
+    var pinMain = document.querySelector('.map__pin--main');
+    var fieldsets = document.querySelectorAll('fieldset');
+    var map = document.querySelector('.map');
+    var mapPins = document.querySelector('.map__pins');
+    var pinMainDefaultCoords = {
+      left: 570,
+      top: 375
+    };
+
+    var setDisable = function (fieldsetsArr) {
+      for (var j = 0; j < fieldsetsArr.length; j++) {
+        fieldsetsArr[j].setAttribute('disabled', 'disabled');
+      }
+    };
+
+    removeChilds(mapPins);
+    setDisable(fieldsets);
+
+    map.classList.add('map--faded');
+    adForm.classList.add('ad-form--disabled');
+    mapPins.appendChild(pinMain);
+    pinMain.style.left = pinMainDefaultCoords.left + 'px';
+    pinMain.style.top = pinMainDefaultCoords.top + 'px';
+    pinMain.addEventListener('mousedown', onMainPinClick);
+  };
+
+  adForm.addEventListener('submit', function (evt) {
+    save(new FormData(adForm), function () {
+      setDefaultStatePage();
+      successMessageHandler();
+      adForm.reset();
+    }, errorHandler);
+
+    evt.preventDefault();
+  });
 })();
