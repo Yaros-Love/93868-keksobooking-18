@@ -34,25 +34,6 @@
     return fragment;
   };
 
-  var getPriceRange = function (option, x) {
-    var housingPrice = {
-      'high': {
-        'min': 50000,
-        'max': Infinity
-      },
-      'low': {
-        'min': 0,
-        'max': 9999
-      },
-      'middle': {
-        'min': 10000,
-        'max': 50001
-      }
-    };
-
-    return x >= housingPrice[option].min && x <= housingPrice[option].max;
-  };
-
   var updatePins = function () {
     var housingType = filter.querySelector('#housing-type');
     var housingPrice = filter.querySelector('#housing-price');
@@ -60,21 +41,39 @@
     var housingGuests = filter.querySelector('#housing-guests');
     var housingCheckedFeatures = filter.querySelectorAll('input:checked');
 
+    var getPriceRange = function (option, x) {
+      var housingPriceRange = {
+        'high': {
+          'min': 50000,
+          'max': Infinity
+        },
+        'low': {
+          'min': 0,
+          'max': 9999
+        },
+        'middle': {
+          'min': 10000,
+          'max': 50001
+        }
+      };
+
+      return x >= housingPriceRange[option].min && x <= housingPriceRange[option].max;
+    };
 
     var filteredHouseArr = pins.
     filter(function (item) {
       return item.offer.type === housingType.value || housingType.value === 'any';
-    }).
-    filter(function (item) {
+    })
+    .filter(function (item) {
       return housingPrice.value === 'any' || getPriceRange(housingPrice.value, item.offer.price);
-    }).
-    filter(function (item) {
+    })
+    .filter(function (item) {
       return housingRooms.value === 'any' || parseInt(housingRooms.value, 10) === item.offer.rooms;
-    }).
-    filter(function (item) {
+    })
+    .filter(function (item) {
       return housingGuests.value === 'any' || parseInt(housingGuests.value, 10) === item.offer.guests;
-    }).
-    filter(function (item) {
+    })
+    .filter(function (item) {
       return Array.from(housingCheckedFeatures).every(function (elem) {
         return item.offer.features.includes(elem.value);
       });
@@ -85,8 +84,18 @@
     mapPins.appendChild(insertPinsInMap(filteredHouseArr));
   };
 
+  var debounce = function (update) {
+    var DEBOUNCE_INTERVAL = 500; // ms
+    var lastTimeout;
+
+    if (lastTimeout) {
+      window.clearTimeout(lastTimeout);
+    }
+    lastTimeout = window.setTimeout(update, DEBOUNCE_INTERVAL);
+  };
+
   filter.addEventListener('change', function () {
-    updatePins();
+    debounce(updatePins);
     var mapCard = document.querySelector('.map__card');
     if (mapCard !== null) {
       mapCard.remove();
