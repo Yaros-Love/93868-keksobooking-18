@@ -155,8 +155,10 @@
       }
     };
 
+    if (mapCard !== null) {
+      mapCard.remove();
+    }
     removeChilds(mapPins);
-    mapCard.remove();
     setDisable(fieldsets);
 
     map.classList.add('map--faded');
@@ -168,7 +170,7 @@
   };
 
   adForm.addEventListener('submit', function (evt) {
-    save(new FormData(adForm), function () {
+    save(new FormData(adForm), function (response) {
       setDefaultStatePage();
       successMessageHandler();
       adForm.reset();

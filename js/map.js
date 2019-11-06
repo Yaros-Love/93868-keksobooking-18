@@ -9,6 +9,7 @@
   var clickInMapCoords = window.mainPinMove.clickInMapCoords;
   var onMouseUp = window.mainPinMove.onMouseUp;
   var removeChilds = window.card.removeChilds;
+  var debounce = window.debounce;
 
   var main = document.querySelector('main');
   var adForm = document.querySelector('.ad-form');
@@ -34,7 +35,7 @@
     return fragment;
   };
 
-  var updatePins = function () {
+  var updatePins = debounce(function () {
     var housingType = filter.querySelector('#housing-type');
     var housingPrice = filter.querySelector('#housing-price');
     var housingRooms = filter.querySelector('#housing-rooms');
@@ -82,20 +83,10 @@
     removeChilds(mapPins);
     mapPins.appendChild(pinMain);
     mapPins.appendChild(insertPinsInMap(filteredHouseArr));
-  };
-
-  var debounce = function (update) {
-    var DEBOUNCE_INTERVAL = 500; // ms
-    var lastTimeout;
-
-    if (lastTimeout) {
-      window.clearTimeout(lastTimeout);
-    }
-    lastTimeout = window.setTimeout(update, DEBOUNCE_INTERVAL);
-  };
+  });
 
   filter.addEventListener('change', function () {
-    debounce(updatePins);
+    updatePins();
     var mapCard = document.querySelector('.map__card');
     if (mapCard !== null) {
       mapCard.remove();
