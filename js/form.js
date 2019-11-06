@@ -143,6 +143,7 @@
     var fieldsets = document.querySelectorAll('fieldset');
     var map = document.querySelector('.map');
     var mapPins = document.querySelector('.map__pins');
+    var mapCard = document.querySelector('.map__card');
     var pinMainDefaultCoords = {
       left: 570,
       top: 375
@@ -155,6 +156,7 @@
     };
 
     removeChilds(mapPins);
+    mapCard.remove();
     setDisable(fieldsets);
 
     map.classList.add('map--faded');
