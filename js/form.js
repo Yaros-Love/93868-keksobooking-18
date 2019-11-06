@@ -143,6 +143,7 @@
     var fieldsets = document.querySelectorAll('fieldset');
     var map = document.querySelector('.map');
     var mapPins = document.querySelector('.map__pins');
+    var mapCard = document.querySelector('.map__card');
     var pinMainDefaultCoords = {
       left: 570,
       top: 375
@@ -154,6 +155,9 @@
       }
     };
 
+    if (mapCard !== null) {
+      mapCard.remove();
+    }
     removeChilds(mapPins);
     setDisable(fieldsets);
 
@@ -166,7 +170,7 @@
   };
 
   adForm.addEventListener('submit', function (evt) {
-    save(new FormData(adForm), function () {
+    save(new FormData(adForm), function (response) {
       setDefaultStatePage();
       successMessageHandler();
       adForm.reset();

@@ -8,7 +8,6 @@
 
   var map = document.querySelector('.map');
   var pinMain = map.querySelector('.map__pin--main');
-  var mapRect = map.getBoundingClientRect();
 
   var getAddressValue = function (pin) {
     var address = getComputedStyle(pin);
@@ -28,7 +27,7 @@
     inputAddress.value = getAddressValue(pinMain).x + ', ' + getAddressValue(pinMain).y;
   };
 
-  var movePinTo = function (x, y) {
+  var movePinTo = function (x, y, mapRect) {
     var LOCATION_X_MIN = 0;
     var LOCATION_X_MAX = mapRect.width;
     var LOCATION_Y_MIN = 130 - 54;
@@ -53,11 +52,13 @@
   };
 
   var clickInMapCoords = function (evt) {
+    var mapRect = map.getBoundingClientRect();
+
     var coords = {
       x: evt.pageX - mapRect.x,
-      y: evt.pageY - mapRect.y
+      y: evt.pageY - (mapRect.top + pageYOffset)
     };
-    return movePinTo(coords.x, coords.y);
+    return movePinTo(coords.x, coords.y, mapRect);
   };
 
   var onMouseUp = function (upEvt) {
