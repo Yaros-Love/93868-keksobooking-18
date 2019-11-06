@@ -75,8 +75,12 @@
   var capacityException = '0';
   var roomNumberSelect = document.querySelector('#room_number');
   var capacitySelect = document.querySelector('#capacity');
-  roomNumberSelect.value = '1';
-  capacitySelect.value = '1';
+
+  var setEqualizeRoomsAndGuests = function () {
+    roomNumberSelect.value = '1';
+    capacitySelect.value = '1';
+  };
+  setEqualizeRoomsAndGuests();
 
   var renderCapacity = function (room) {
     var options = capacitySelect.children;
@@ -169,12 +173,32 @@
     pinMain.addEventListener('mousedown', onMainPinClick);
   };
 
+  var saveError = function (err) {
+    var errorTemplate = document.querySelector('#error');
+    var errorElement = errorTemplate.content.cloneNode(true);
+    var errorMessage = errorElement.querySelector('.error__message');
+    var errorButton = errorElement.querySelector('.error__button');
+    errorMessage.innerHTML = err + ', упс!';
+
+    main.prepend(errorElement);
+
+    var closeError = function () {
+      var error = main.querySelector('.error');
+      error.remove();
+      setEqualizeRoomsAndGuests();
+      errorButton.removeEventListener('click', closeError);
+    };
+
+    errorButton.addEventListener('click', closeError);
+  };
+
   adForm.addEventListener('submit', function (evt) {
-    save(new FormData(adForm), function (response) {
+    save(new FormData(adForm), function () {
       setDefaultStatePage();
       successMessageHandler();
       adForm.reset();
-    }, errorHandler);
+      setEqualizeRoomsAndGuests();
+    }, saveError);
 
     evt.preventDefault();
   });
