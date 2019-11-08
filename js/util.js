@@ -1,10 +1,12 @@
 'use strict';
 
 (function () {
+  var Coordinate = window.coordinate.Coordinate;
   var IMG_WIDTH = 40;
   var IMG_HEIGHT = 70;
   var ENTER_KEYCODE = 13;
   var ESC_KEYCODE = 27;
+  var PIN_MAIN_DEFAULT_COORDS = new Coordinate(570, 375);
 
   var getRandomArray = function (arr) {
     var randomArr = [];
@@ -29,6 +31,7 @@
     ENTER_KEYCODE: ENTER_KEYCODE,
     ESC_KEYCODE: ESC_KEYCODE,
     getRandomInt: getRandomInt,
-    getRandomArray: getRandomArray
+    getRandomArray: getRandomArray,
+    PIN_MAIN_DEFAULT_COORDS: PIN_MAIN_DEFAULT_COORDS
   };
 })();

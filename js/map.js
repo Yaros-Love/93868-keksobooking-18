@@ -20,9 +20,9 @@
   var filter = document.querySelector('.map__filters');
 
   var resetDisable = function (fieldsetsArr) {
-    for (var j = 0; j < fieldsetsArr.length; j++) {
-      fieldsetsArr[j].removeAttribute('disabled', 'disabled');
-    }
+    fieldsetsArr.forEach(function (item) {
+      item.disabled = false;
+    });
   };
 
   var insertPinsInMap = function (pinsArr) {
