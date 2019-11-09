@@ -49,15 +49,15 @@
 
     var getPriceRange = function (option, x) {
       var housingPriceRange = {
-        'high': {
+        'HIGH': {
           'min': 50000,
           'max': Infinity
         },
-        'low': {
+        'LOW': {
           'min': 0,
           'max': 9999
         },
-        'middle': {
+        'MIDDLE': {
           'min': 10000,
           'max': 50001
         }
@@ -71,7 +71,7 @@
       return item.offer.type === housingType.value || housingType.value === 'any';
     })
     .filter(function (item) {
-      return housingPrice.value === 'any' || getPriceRange(housingPrice.value, item.offer.price);
+      return housingPrice.value === 'any' || getPriceRange(housingPrice.value.toUpperCase(), item.offer.price);
     })
     .filter(function (item) {
       return housingRooms.value === 'any' || parseInt(housingRooms.value, 10) === item.offer.rooms;

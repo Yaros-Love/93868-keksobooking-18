@@ -20,6 +20,8 @@
         });
 
         reader.readAsDataURL(file);
+      } else {
+        alert('Выберете файл из предложенного формата: ' + FILE_TYPES.join(', '));
       }
     });
   };
