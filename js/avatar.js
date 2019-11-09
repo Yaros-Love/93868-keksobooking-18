@@ -20,8 +20,6 @@
         });
 
         reader.readAsDataURL(file);
-      } else {
-        alert('Выберете файл из предложенного формата: ' + FILE_TYPES.join(', '));
       }
     });
   };
@@ -39,6 +37,7 @@
   var photoContainer = document.querySelector('.ad-form__photo-container');
   var photoUpload = document.querySelector('#images');
   var blockPhoto = document.querySelector('.ad-form__photo');
+
 
   var setApartPhoto = function (reader) {
     var LIMIT_PHOTO = 16;
