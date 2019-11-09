@@ -54,12 +54,17 @@
       main.removeEventListener('click', successClose);
     };
 
-    main.addEventListener('click', successClose);
-    document.addEventListener('keydown', function (evt) {
+    var onCloseSuccessEsc = function (evt) {
       if (evt.keyCode === ESC_KEYCODE) {
-        successClose();
+        var message = main.querySelector('.success');
+        message.remove();
+        renderCapacity(roomNumberSelect.value);
       }
-    });
+      document.removeEventListener('keydown', onCloseSuccessEsc);
+    };
+
+    main.addEventListener('click', successClose);
+    document.addEventListener('keydown', onCloseSuccessEsc);
   };
 
   var saveError = function (err) {

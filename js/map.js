@@ -1,9 +1,10 @@
 'use strict';
 
 (function () {
-  var renderPin = window.pin.renderPin;
   var ENTER_KEYCODE = window.util.ENTER_KEYCODE;
   var PINS_AMOUNT = 5;
+
+  var renderPin = window.pin.renderPin;
   var load = window.backend.load;
   var setInputAdress = window.mainPinMove.setInputAdress;
   var clickInMapCoords = window.mainPinMove.clickInMapCoords;
@@ -16,11 +17,15 @@
   var map = document.querySelector('.map');
   var pinMain = map.querySelector('.map__pin--main');
   var fieldsets = document.querySelectorAll('fieldset');
+  var selects = document.querySelectorAll('select');
   var mapPins = map.querySelector('.map__pins');
   var filter = document.querySelector('.map__filters');
 
   var resetDisable = function (fieldsetsArr) {
     fieldsetsArr.forEach(function (item) {
+      item.disabled = false;
+    });
+    selects.forEach(function (item) {
       item.disabled = false;
     });
   };

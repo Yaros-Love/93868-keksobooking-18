@@ -6,6 +6,7 @@
   var MAX_LENGTH = 100;
 
   var adForm = document.querySelector('.ad-form');
+  var selects = document.querySelectorAll('select');
   var fieldsets = document.querySelectorAll('fieldset');
   var inputAddress = adForm.querySelector('#address');
   var title = adForm.querySelector('#title');
@@ -20,6 +21,9 @@
 
   var setFieldsetsDisable = function () {
     fieldsets.forEach(function (item) {
+      item.disabled = true;
+    });
+    selects.forEach(function (item) {
       item.disabled = true;
     });
   };
