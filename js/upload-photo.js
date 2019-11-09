@@ -1,8 +1,10 @@
 'use strict';
 
 (function () {
-  var uploadFile = function (fileChooser, func) {
-    var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
+  var LIMIT_PHOTO = 16;
+  var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
+
+  var setFileUpload = function (fileChooser, onImageLoad) {
 
     fileChooser.addEventListener('change', function () {
       var file = fileChooser.files[0];
@@ -16,7 +18,7 @@
         var reader = new FileReader();
 
         reader.addEventListener('load', function () {
-          func(reader.result);
+          onImageLoad(reader.result);
         });
 
         reader.readAsDataURL(file);
@@ -25,14 +27,14 @@
   };
 
   var avatarChooser = document.querySelector('#avatar');
-  var avatarPreview = document.querySelector('.ad-form-header__preview');
-  var preview = avatarPreview.querySelector('img');
-  var defaultSrcPreview = preview.src;
+  var avatarPreview = document.querySelector('.ad-form-header__preview > img');
+  // var preview = avatarPreview.querySelector('img');
+  var defaultSrcPreview = avatarPreview.src;
   var setAvatarPreview = function (reader) {
-    preview.src = reader;
+    avatarPreview.src = reader;
   };
 
-  uploadFile(avatarChooser, setAvatarPreview);
+  setFileUpload(avatarChooser, setAvatarPreview);
 
   var photoContainer = document.querySelector('.ad-form__photo-container');
   var photoUpload = document.querySelector('#images');
@@ -40,8 +42,6 @@
 
 
   var setApartPhoto = function (reader) {
-    var LIMIT_PHOTO = 16;
-
     var uploadedPhotos = photoContainer.querySelectorAll('.ad-form__photo');
     var photoTemplate = document.querySelector('#photo').content;
     var photoElement = photoTemplate.cloneNode(true);
@@ -55,7 +55,7 @@
     }
   };
 
-  uploadFile(photoUpload, setApartPhoto);
+  setFileUpload(photoUpload, setApartPhoto);
 
   var resetUploadedFiles = function () {
     var uploadedPhotos = photoContainer.querySelectorAll('.ad-form__photo');
@@ -64,11 +64,11 @@
     });
     photoContainer.appendChild(blockPhoto);
 
-    preview.src = defaultSrcPreview;
+    avatarPreview.src = defaultSrcPreview;
   };
 
-  window.avatar = {
-    preview: preview,
+  window.uploadPhoto = {
+    avatarPreview: avatarPreview,
     defaultSrcPreview: defaultSrcPreview,
     resetUploadedFiles: resetUploadedFiles
   };

@@ -1,14 +1,15 @@
 'use strict';
 
 (function () {
-  var ESC_KEYCODE = window.util.ESC_KEYCODE;
+  var ESC_KEY_CODE = window.util.ESC_KEY_CODE;
 
   var save = window.backend.save;
   var onMainPinClick = window.map.onMainPinClick;
   var resetPage = window.resetPage;
   var setMinValuePlaceholder = window.initialStateForm.setMinValuePlaceholder;
-  var setTimeSynch = window.initialStateForm.setTimeSynch;
+  var setTimeSync = window.initialStateForm.setTimeSync;
   var renderCapacity = window.initialStateForm.renderCapacity;
+  var errorHandler = window.util.errorHandler;
 
   var adForm = document.querySelector('.ad-form');
   var pinMain = document.querySelector('.map__pin--main');
@@ -19,11 +20,11 @@
 
   timeIn.addEventListener('input', function (evt) {
     var option = evt.currentTarget.selectedIndex;
-    setTimeSynch(option);
+    setTimeSync(option);
   });
   timeOut.addEventListener('input', function (evt) {
     var option = evt.currentTarget.selectedIndex;
-    setTimeSynch(option);
+    setTimeSync(option);
   });
 
   typeSelect.addEventListener('input', function (evt) {
@@ -39,10 +40,8 @@
     renderCapacity(room);
   });
 
-
-  var main = document.querySelector('main');
-
   var successMessageHandler = function () {
+    var main = document.querySelector('main');
     var successTemplate = document.querySelector('#success');
     var successElement = successTemplate.content.cloneNode(true);
 
@@ -55,7 +54,7 @@
     };
 
     var onCloseSuccessEsc = function (evt) {
-      if (evt.keyCode === ESC_KEYCODE) {
+      if (evt.keyCode === ESC_KEY_CODE) {
         var message = main.querySelector('.success');
         message.remove();
         renderCapacity(roomNumberSelect.value);
@@ -67,41 +66,12 @@
     document.addEventListener('keydown', onCloseSuccessEsc);
   };
 
-  var saveError = function (err) {
-    var errorTemplate = document.querySelector('#error');
-    var errorElement = errorTemplate.content.cloneNode(true);
-    var errorMessage = errorElement.querySelector('.error__message');
-    var errorButton = errorElement.querySelector('.error__button');
-    errorMessage.innerHTML = err + ', упс!';
-
-    main.prepend(errorElement);
-
-    var onCloseErrorClick = function () {
-      var error = main.querySelector('.error');
-      error.remove();
-      renderCapacity(roomNumberSelect.value);
-      errorButton.removeEventListener('click', onCloseErrorClick);
-    };
-
-    var onCloseErrorEsc = function (evt) {
-      if (evt.keyCode === ESC_KEYCODE) {
-        var error = main.querySelector('.error');
-        error.remove();
-        renderCapacity(roomNumberSelect.value);
-      }
-      document.removeEventListener('keydown', onCloseErrorEsc);
-    };
-
-    errorButton.addEventListener('click', onCloseErrorClick);
-    document.addEventListener('keydown', onCloseErrorEsc);
-  };
-
 
   adForm.addEventListener('submit', function (evt) {
     save(new FormData(adForm), function () {
       resetPage();
       successMessageHandler();
-    }, saveError);
+    }, errorHandler);
 
     pinMain.addEventListener('mousedown', onMainPinClick);
     evt.preventDefault();

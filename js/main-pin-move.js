@@ -20,7 +20,7 @@
     return new Coordinate(x, y);
   };
 
-  var setInputAdress = function () {
+  var setInputAddress = function () {
     var inputAddress = document.querySelector('#address');
 
     inputAddress.setAttribute('readonly', 'readonly');
@@ -48,7 +48,7 @@
 
     pinMain.style.left = (x - PIN_WIDTH / 2) + 'px';
     pinMain.style.top = (y - PIN_HEIGHT / 2) + 'px';
-    setInputAdress();
+    setInputAddress();
   };
 
   var clickInMapCoords = function (evt) {
@@ -70,7 +70,7 @@
 
   window.mainPinMove = {
     movePinTo: movePinTo,
-    setInputAdress: setInputAdress,
+    setInputAddress: setInputAddress,
     clickInMapCoords: clickInMapCoords,
     onMouseUp: onMouseUp
   };

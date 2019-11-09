@@ -3,16 +3,18 @@
 (function () {
   var renderCard = window.card.renderCard;
 
-  var renderPin = function (obj) {
+  var renderPin = function (pinProperty) {
     var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
     var pinElement = pinTemplate.cloneNode(true);
-    var pinElementImg = pinElement.querySelector('img');
     var map = document.querySelector('.map');
 
-    pinElement.style.left = obj.location.x + 'px';
-    pinElement.style.top = obj.location.y + 'px';
-    pinElementImg.setAttribute('src', obj.author.avatar);
-    pinElementImg.setAttribute('alt', obj.offer.title);
+    pinElement.style.left = pinProperty.location.x + 'px';
+    pinElement.style.top = pinProperty.location.y + 'px';
+
+    var pinElementImg = pinElement.querySelector('img');
+
+    pinElementImg.setAttribute('src', pinProperty.author.avatar);
+    pinElementImg.setAttribute('alt', pinProperty.offer.title);
 
     var onPinClick = function () {
       var mapPins = document.querySelectorAll('.map__pin--active');
@@ -21,7 +23,7 @@
         mapPins[i].classList.remove('map__pin--active');
       }
       pinElement.classList.add('map__pin--active');
-      map.appendChild(renderCard(obj));
+      map.appendChild(renderCard(pinProperty));
 
       if (mapCard !== null) {
         mapCard.remove();
