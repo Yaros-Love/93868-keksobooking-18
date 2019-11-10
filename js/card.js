@@ -34,12 +34,12 @@
     //  получаем дефолтную колекцию li и удаляем
     removeChildren(popupFeatures);
     // создаем новую коллекцию li вставляем во фрагмент
-    var createLi = function (featureArr) {
+    var createLi = function (features) {
       var liElement = cardTemplate.querySelector('.popup__feature');
       var fragmentLi = document.createDocumentFragment();
-      for (var j = 0; j < featureArr.length; j++) {
+      for (var j = 0; j < features.length; j++) {
         var featureElement = liElement.cloneNode(true);
-        featureElement.classList.add('popup__feature--' + featureArr[j]);
+        featureElement.classList.add('popup__feature--' + features[j]);
         fragmentLi.appendChild(featureElement);
       }
       return fragmentLi;
