@@ -4,6 +4,7 @@
   var resetPage = function () {
     var PIN_MAIN_DEFAULT_COORDS = window.initialStateForm.PIN_MAIN_DEFAULT_COORDS;
     var resetUploadedFiles = window.uploadPhoto.resetUploadedFiles;
+    var setDefaultPreview = window.uploadPhoto.setDefaultPreview;
     var removeChildren = window.util.removeChildren;
     var setDisable = window.initialStateForm.setDisable;
     var setAddressInactiveState = window.initialStateForm.setAddressInactiveState;
@@ -41,6 +42,7 @@
     mapFilter.reset();
 
     resetUploadedFiles();
+    setDefaultPreview();
     setAddressInactiveState();
 
     var map = document.querySelector('.map');

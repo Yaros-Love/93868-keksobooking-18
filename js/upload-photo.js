@@ -28,10 +28,14 @@
 
   var avatarChooser = document.querySelector('#avatar');
   var avatarPreview = document.querySelector('.ad-form-header__preview > img');
-  // var preview = avatarPreview.querySelector('img');
   var defaultSrcPreview = avatarPreview.src;
+
   var setAvatarPreview = function (reader) {
     avatarPreview.src = reader;
+  };
+
+  var setDefaultPreview = function () {
+    avatarPreview.src = defaultSrcPreview;
   };
 
   setFileUpload(avatarChooser, setAvatarPreview);
@@ -63,13 +67,10 @@
       item.remove();
     });
     photoContainer.appendChild(blockPhoto);
-
-    avatarPreview.src = defaultSrcPreview;
   };
 
   window.uploadPhoto = {
-    avatarPreview: avatarPreview,
-    defaultSrcPreview: defaultSrcPreview,
-    resetUploadedFiles: resetUploadedFiles
+    resetUploadedFiles: resetUploadedFiles,
+    setDefaultPreview: setDefaultPreview
   };
 })();

@@ -5,6 +5,25 @@
   var typeHouse = window.initialStateForm.typeHouse;
   var removeChildren = window.util.removeChildren;
 
+  var removeCard = function () {
+    if (document.querySelector('.map__card')) {
+      document.querySelector('.map__card').remove();
+      document.removeEventListener('keydown', onPressEsc);
+      document.removeEventListener('keydown', removeCard);
+    }
+  };
+
+  var onPressEsc = function (evt) {
+    if (evt.keyCode === ESC_KEY_CODE) {
+      removeCard();
+    }
+  };
+
+  var getTypeHouseOnRus = function (type) {
+    return typeHouse[type].text;
+  };
+
+
   var renderCard = function (apartCard) {
     var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
     var cardElement = cardTemplate.cloneNode(true);
@@ -37,9 +56,6 @@
       return fragment;
     };
 
-    var getTypeHouseOnRus = function (type) {
-      return typeHouse[type].text;
-    };
 
     cardElement.querySelector('.popup__title').textContent = apartCard.offer.title;
     cardElement.querySelector('.popup__text--address').textContent = apartCard.offer.address;
@@ -57,31 +73,15 @@
 
     var popupClose = cardElement.querySelector('.popup__close');
 
-    var removeCard = function () {
-      cardElement.remove();
-    };
-
-    var onClickCross = function () {
-      removeCard();
-      popupClose.removeEventListener('click', onClickCross);
-    };
-
-    var onPressEsc = function (evt) {
-      if (evt.keyCode === ESC_KEY_CODE) {
-        removeCard();
-      }
-
-      document.removeEventListener('keydown', onPressEsc);
-    };
-
-    popupClose.addEventListener('click', onClickCross);
+    popupClose.addEventListener('click', removeCard);
     document.addEventListener('keydown', onPressEsc);
 
     return cardElement;
   };
 
+
   window.card = {
     renderCard: renderCard,
-    removeChildren: removeChildren
+    removeCard: removeCard
   };
 })();

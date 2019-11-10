@@ -2,6 +2,7 @@
 
 (function () {
   var renderCard = window.card.renderCard;
+  var removeCard = window.card.removeCard;
 
   var renderPin = function (pinProperty) {
     var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
@@ -18,16 +19,12 @@
 
     var onPinClick = function () {
       var mapPins = document.querySelectorAll('.map__pin--active');
-      var mapCard = document.querySelector('.map__card');
       for (var i = 0; i < mapPins.length; i++) {
         mapPins[i].classList.remove('map__pin--active');
       }
       pinElement.classList.add('map__pin--active');
+      removeCard();
       map.appendChild(renderCard(pinProperty));
-
-      if (mapCard !== null) {
-        mapCard.remove();
-      }
     };
 
     pinElement.addEventListener('click', function () {
