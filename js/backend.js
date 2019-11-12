@@ -3,7 +3,7 @@
 (function () {
   var URL = 'https://js.dump.academy/keksobooking/data';
   var URL_POST = 'https://js.dump.academy/keksobooking';
-  var TIMEOUT = 10000;
+  var TIMEOUT = 10000; // ms
 
   var setConnection = function (onLoad, onError, method, url) {
     var xhr = new XMLHttpRequest();

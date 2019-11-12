@@ -4,7 +4,7 @@
   var ENTER_KEY_CODE = window.util.ENTER_KEY_CODE;
 
   var PINS_AMOUNT = 5;
-  var HOUSING_PRICE_RANGE = {
+  var HousingPriceRange = {
     'HIGH': {
       'MIN': 50000,
       'MAX': Infinity
@@ -23,21 +23,21 @@
   var renderPin = window.pin.renderPin;
   var load = window.backend.load;
   var setInputAddress = window.mainPinMove.setInputAddress;
-  var clickInMapCoords = window.mainPinMove.clickInMapCoords;
+  var onPinMousemove = window.mainPinMove.onPinMousemove;
   var onMouseUp = window.mainPinMove.onMouseUp;
   var removeChildren = window.util.removeChildren;
   var debounce = window.util.debounce;
+  // var addHandler = window.util.addHandler;
+  var onRequestError = window.util.onRequestError;
 
-  var errorHandler = window.util.errorHandler;
 
-
-  var adForm = document.querySelector('.ad-form');
-  var map = document.querySelector('.map');
-  var pinMain = map.querySelector('.map__pin--main');
-  var fieldsets = document.querySelectorAll('fieldset');
-  var selects = document.querySelectorAll('select');
-  var mapPins = map.querySelector('.map__pins');
-  var filter = document.querySelector('.map__filters');
+  var adFormElement = document.querySelector('.ad-form');
+  var mapElement = document.querySelector('.map');
+  var pinMainElement = mapElement.querySelector('.map__pin--main');
+  var fieldsetElements = document.querySelectorAll('fieldset');
+  var selectElements = document.querySelectorAll('select');
+  var mapPinsElement = mapElement.querySelector('.map__pins');
+  var filterElement = document.querySelector('.map__filters');
 
   var pins = [];
 
@@ -47,53 +47,44 @@
     });
   };
 
-  var insertPinsInMap = function (pinsArr) {
+  var insertPinsInMap = function (array) {
     var fragment = document.createDocumentFragment();
-    var takeNumber = pinsArr.length > PINS_AMOUNT ? PINS_AMOUNT : pinsArr.length;
+    var takeNumber = array.length > PINS_AMOUNT ? PINS_AMOUNT : array.length;
     for (var i = 0; i < takeNumber; i++) {
-      fragment.appendChild(renderPin(pinsArr[i]));
+      fragment.appendChild(renderPin(array[i]));
     }
 
     return fragment;
   };
 
   var getPriceRange = function (option, price) {
-    return price >= HOUSING_PRICE_RANGE[option].MIN && price <= HOUSING_PRICE_RANGE[option].MAX;
+    return price >= HousingPriceRange[option].MIN && price <= HousingPriceRange[option].MAX;
   };
 
   var updatePins = debounce(function () {
-    var housingType = filter.querySelector('#housing-type');
-    var housingPrice = filter.querySelector('#housing-price');
-    var housingRooms = filter.querySelector('#housing-rooms');
-    var housingGuests = filter.querySelector('#housing-guests');
-    var housingCheckedFeatures = filter.querySelectorAll('input:checked');
+    var housingTypeElement = filterElement.querySelector('#housing-type');
+    var housingPriceElement = filterElement.querySelector('#housing-price');
+    var housingRoomsElement = filterElement.querySelector('#housing-rooms');
+    var housingGuestsElement = filterElement.querySelector('#housing-guests');
+    var housingCheckedFeatureElements = filterElement.querySelectorAll('input:checked');
 
+    var filteredHouses = pins
+    .filter(function (item) {
+      return (housingTypeElement.value === 'any' || item.offer.type === housingTypeElement.value) &&
+              (housingPriceElement.value === 'any' || getPriceRange(housingPriceElement.value.toUpperCase(), item.offer.price)) &&
+              (housingRoomsElement.value === 'any' || parseInt(housingRoomsElement.value, 10) === item.offer.rooms) &&
+              (housingGuestsElement.value === 'any' || parseInt(housingGuestsElement.value, 10) === item.offer.guests) &&
+              (Array.from(housingCheckedFeatureElements).every(function (elem) {
+                return item.offer.features.includes(elem.value);
+              }));
+    });
 
-    var filteredHouseArr = pins
-      .filter(function (item) {
-        return item.offer.type === housingType.value || housingType.value === 'any';
-      })
-      .filter(function (item) {
-        return housingPrice.value === 'any' || getPriceRange(housingPrice.value.toUpperCase(), item.offer.price);
-      })
-      .filter(function (item) {
-        return housingRooms.value === 'any' || parseInt(housingRooms.value, 10) === item.offer.rooms;
-      })
-      .filter(function (item) {
-        return housingGuests.value === 'any' || parseInt(housingGuests.value, 10) === item.offer.guests;
-      })
-      .filter(function (item) {
-        return Array.from(housingCheckedFeatures).every(function (elem) {
-          return item.offer.features.includes(elem.value);
-        });
-      });
-
-    removeChildren(mapPins);
-    mapPins.appendChild(pinMain);
-    mapPins.appendChild(insertPinsInMap(filteredHouseArr));
+    removeChildren(mapPinsElement);
+    mapPinsElement.appendChild(pinMainElement);
+    mapPinsElement.appendChild(insertPinsInMap(filteredHouses));
   });
 
-  filter.addEventListener('change', function () {
+  filterElement.addEventListener('change', function () {
     updatePins();
     var mapCard = document.querySelector('.map__card');
     if (mapCard !== null) {
@@ -101,31 +92,38 @@
     }
   });
 
+
   var onMainPinClick = function () {
-    load(successHandler, errorHandler);
-    pinMain.removeEventListener('mousedown', onMainPinClick);
+    resetDisable(fieldsetElements);
+    resetDisable(selectElements);
+    mapElement.classList.remove('map--faded');
+    adFormElement.classList.remove('ad-form--disabled');
+    setInputAddress();
+    load(successHandler, onRequestError);
+
+    // if (mainElement.querySelector('.error') === null) {
+    //   pinMainElement.removeEventListener('mousedown', onMainPinClick);
+    // } else {
+    //   addHandler(pinMainElement, onMainPinClick);
+    // }
+    pinMainElement.removeEventListener('mousedown', onMainPinClick);
   };
 
   var successHandler = function (data) {
     pins = data;
-    resetDisable(fieldsets);
-    resetDisable(selects);
-    map.classList.remove('map--faded');
-    adForm.classList.remove('ad-form--disabled');
-    mapPins.appendChild(insertPinsInMap(data));
-    setInputAddress();
+    mapPinsElement.appendChild(insertPinsInMap(data));
   };
 
 
-  pinMain.addEventListener('mousedown', onMainPinClick);
+  pinMainElement.addEventListener('mousedown', onMainPinClick);
 
-  pinMain.addEventListener('mousedown', function (evt) {
+  pinMainElement.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
-    document.addEventListener('mousemove', clickInMapCoords);
+    document.addEventListener('mousemove', onPinMousemove);
     document.addEventListener('mouseup', onMouseUp);
   });
 
-  pinMain.addEventListener('keydown', function (evt) {
+  pinMainElement.addEventListener('keydown', function (evt) {
     if (evt.keyCode === ENTER_KEY_CODE) {
       onMainPinClick();
     }
@@ -133,8 +131,6 @@
 
   window.map = {
     insertPinsInMap: insertPinsInMap,
-    onMainPinClick: onMainPinClick,
-    map: map,
-    errorHandler: errorHandler
+    onMainPinClick: onMainPinClick
   };
 })();

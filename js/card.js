@@ -1,79 +1,63 @@
 'use strict';
 
 (function () {
-  var ESC_KEY_CODE = window.util.ESC_KEY_CODE;
-  var typeHouse = window.initialStateForm.typeHouse;
+  var TypeHouse = window.initialStateForm.TypeHouse;
   var removeChildren = window.util.removeChildren;
+  var isEscEvent = window.util.isEscEvent;
 
   var removeCard = function () {
-    if (document.querySelector('.map__card')) {
-      document.querySelector('.map__card').remove();
+    var mapCardElement = document.querySelector('.map__card');
+    if (mapCardElement) {
+      mapCardElement.remove();
       document.removeEventListener('keydown', onPressEsc);
-      document.removeEventListener('keydown', removeCard);
+      document.removeEventListener('click', onPressCross);
     }
+  };
+
+  var onPressCross = function () {
+    removeCard();
   };
 
   var onPressEsc = function (evt) {
-    if (evt.keyCode === ESC_KEY_CODE) {
-      removeCard();
-    }
+    isEscEvent(evt, removeCard);
   };
 
   var getTypeHouseOnRus = function (type) {
-    return typeHouse[type].text;
+    return TypeHouse[type].text;
   };
 
+  var cardTemplateElement = document.querySelector('#card').content.querySelector('.map__card');
+  var popupPhotosImgElement = document.querySelector('#card').content.querySelector('.popup__photo');
 
-  var renderCard = function (apartCard) {
-    var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
-    var cardElement = cardTemplate.cloneNode(true);
-    var popupPhotosImg = cardElement.querySelector('.popup__photo');
-    var popupFeatures = cardElement.querySelector('.popup__features');
-    var popupPhotos = cardElement.querySelector('.popup__photos');
+  var renderCard = function (card) {
+    var cardElement = cardTemplateElement.cloneNode(true);
 
-    //  получаем дефолтную колекцию li и удаляем
-    removeChildren(popupFeatures);
-    // создаем новую коллекцию li вставляем во фрагмент
-    var createLi = function (features) {
-      var liElement = cardTemplate.querySelector('.popup__feature');
-      var fragmentLi = document.createDocumentFragment();
-      for (var j = 0; j < features.length; j++) {
-        var featureElement = liElement.cloneNode(true);
-        featureElement.classList.add('popup__feature--' + features[j]);
-        fragmentLi.appendChild(featureElement);
-      }
-      return fragmentLi;
-    };
-
-    var createImages = function (images) {
-      var fragment = document.createDocumentFragment();
-
-      for (var j = 0; j < images.length; j++) {
-        var node = popupPhotosImg.cloneNode(true);
-        node.src = images[j];
-        fragment.appendChild(node);
-      }
-      return fragment;
-    };
-
-
-    cardElement.querySelector('.popup__title').textContent = apartCard.offer.title;
-    cardElement.querySelector('.popup__text--address').textContent = apartCard.offer.address;
-    cardElement.querySelector('.popup__text--price').textContent = apartCard.offer.price + '₽/ночь';
-    cardElement.querySelector('.popup__type').textContent = getTypeHouseOnRus(apartCard.offer.type.toUpperCase());
-    cardElement.querySelector('.popup__text--capacity').textContent = apartCard.offer.rooms + ' комнаты для ' + apartCard.offer.guests + ' гостей';
-    cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + apartCard.offer.checkin + ', выезд до ' + apartCard.offer.checkout;
-    // вставляем фрагмент (новую коллекцию li)
-    popupFeatures.appendChild(createLi(apartCard.offer.features));
-    cardElement.querySelector('.popup__description').textContent = apartCard.offer.description;
+    cardElement.querySelector('.popup__title').textContent = card.offer.title;
+    cardElement.querySelector('.popup__text--address').textContent = card.offer.address;
+    cardElement.querySelector('.popup__text--price').textContent = card.offer.price + '₽/ночь';
+    cardElement.querySelector('.popup__type').textContent = getTypeHouseOnRus(card.offer.type.toUpperCase());
+    cardElement.querySelector('.popup__text--capacity').textContent = card.offer.rooms + ' комнаты для ' + card.offer.guests + ' гостей';
+    cardElement.querySelector('.popup__text--time').textContent = 'Заезд после ' + card.offer.checkin + ', выезд до ' + card.offer.checkout;
+    // удаляем дефолтную коллекцию li
+    removeChildren(cardElement.querySelector('.popup__features'));
+    card.offer.features.forEach(function (item) {
+      var featureElement = document.createElement('li');
+      featureElement.className = 'popup__feature popup__feature--' + item;
+      cardElement.querySelector('.popup__features').appendChild(featureElement);
+    });
+    cardElement.querySelector('.popup__description').textContent = card.offer.description;
     // удаляем шаблон изображения
-    popupPhotos.removeChild(popupPhotos.children[0]);
-    popupPhotos.appendChild(createImages(apartCard.offer.photos));
-    cardElement.querySelector('.popup__avatar').setAttribute('src', apartCard.author.avatar);
+    removeChildren(cardElement.querySelector('.popup__photos'));
+    card.offer.photos.forEach(function (item) {
+      var photo = popupPhotosImgElement.cloneNode(true);
+      photo.src = item;
+      cardElement.querySelector('.popup__photos').appendChild(photo);
+    });
+    cardElement.querySelector('.popup__avatar').src = card.author.avatar;
 
     var popupClose = cardElement.querySelector('.popup__close');
 
-    popupClose.addEventListener('click', removeCard);
+    popupClose.addEventListener('click', onPressCross);
     document.addEventListener('keydown', onPressEsc);
 
     return cardElement;
