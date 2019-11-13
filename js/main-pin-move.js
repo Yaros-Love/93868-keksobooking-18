@@ -1,35 +1,38 @@
 'use strict';
 (function () {
-  var PIN_RADIUS = window.util.PIN_RADIUS;
-  var PIN_ARROW = 22;
-  var PIN_HEIGHT_TOTAL = (PIN_RADIUS * 2) + PIN_ARROW;
-  var LOCATION_X_MIN = 0;
-  var LOCATION_X_MAX = document.querySelector('.map').offsetWidth;
-  var LOCATION_Y_MIN = 130 - (PIN_RADIUS + PIN_ARROW);
-  var LOCATION_Y_MAX = 630 - (PIN_RADIUS + PIN_ARROW);
-
   var Coordinate = window.coordinate.Coordinate;
+  var PIN_WIDTH = 65;
+  var PIN_HEIGHT = 65;
+  var PIN_ARROW = 22;
+  var PIN_HEIGHT_TOTAL = PIN_HEIGHT + PIN_ARROW;
 
-  var mapElement = document.querySelector('.map');
-  var pinMainElement = mapElement.querySelector('.map__pin--main');
+  var map = document.querySelector('.map');
+  var pinMain = map.querySelector('.map__pin--main');
 
   var getAddressValue = function (pin) {
     var address = getComputedStyle(pin);
     var x = parseInt(address.left, 10);
     var y = parseInt(address.top, 10);
-    x += PIN_RADIUS;
+    x += Math.round(PIN_WIDTH / 2);
     y += PIN_HEIGHT_TOTAL;
+
 
     return new Coordinate(x, y);
   };
 
   var setInputAddress = function () {
-    var inputAddressElement = document.querySelector('#address');
-    var addressValue = getAddressValue(pinMainElement);
-    inputAddressElement.value = addressValue.x + ', ' + addressValue.y;
+    var inputAddress = document.querySelector('#address');
+
+    inputAddress.setAttribute('readonly', 'readonly');
+    inputAddress.value = getAddressValue(pinMain).x + ', ' + getAddressValue(pinMain).y;
   };
 
-  var movePinTo = function (x, y) {
+  var movePinTo = function (x, y, mapRect) {
+    var LOCATION_X_MIN = 0;
+    var LOCATION_X_MAX = mapRect.width;
+    var LOCATION_Y_MIN = 130 - 54;
+    var LOCATION_Y_MAX = 630 - 54;
+
     if (x < LOCATION_X_MIN) {
       x = LOCATION_X_MIN;
     }
@@ -43,32 +46,32 @@
       y = LOCATION_Y_MAX;
     }
 
-    pinMainElement.style.left = Math.floor(x - PIN_RADIUS) + 'px';
-    pinMainElement.style.top = y - PIN_RADIUS + 'px';
+    pinMain.style.left = (x - PIN_WIDTH / 2) + 'px';
+    pinMain.style.top = (y - PIN_HEIGHT / 2) + 'px';
     setInputAddress();
   };
 
-  var onPinMouseMove = function (evt) {
-    var mapCoords = mapElement.getBoundingClientRect();
+  var clickInMapCoords = function (evt) {
+    var mapRect = map.getBoundingClientRect();
 
     var coords = {
-      x: evt.pageX - mapCoords.x,
-      y: evt.pageY - (mapCoords.top + pageYOffset)
+      x: evt.pageX - mapRect.x,
+      y: evt.pageY - (mapRect.top + pageYOffset)
     };
-    return movePinTo(coords.x, coords.y);
+    return movePinTo(coords.x, coords.y, mapRect);
   };
 
-  var onMouseUp = function (evt) {
-    evt.preventDefault();
+  var onMouseUp = function (upEvt) {
+    upEvt.preventDefault();
 
-    document.removeEventListener('mousemove', onPinMouseMove);
+    document.removeEventListener('mousemove', clickInMapCoords);
     document.removeEventListener('mouseup', onMouseUp);
   };
 
   window.mainPinMove = {
     movePinTo: movePinTo,
     setInputAddress: setInputAddress,
-    onPinMouseMove: onPinMouseMove,
+    clickInMapCoords: clickInMapCoords,
     onMouseUp: onMouseUp
   };
 })();

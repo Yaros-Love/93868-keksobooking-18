@@ -10,11 +10,11 @@
       var file = fileChooser.files[0];
       var fileName = file.name.toLowerCase();
 
-      var isValideType = FILE_TYPES.some(function (item) {
+      var matches = FILE_TYPES.some(function (item) {
         return fileName.endsWith(item);
       });
 
-      if (isValideType) {
+      if (matches) {
         var reader = new FileReader();
 
         reader.addEventListener('load', function () {
@@ -26,47 +26,47 @@
     });
   };
 
-  var avatarChooserElement = document.querySelector('#avatar');
-  var avatarPreviewElement = document.querySelector('.ad-form-header__preview > img');
-  var defaultPreviewSrc = avatarPreviewElement.src;
+  var avatarChooser = document.querySelector('#avatar');
+  var avatarPreview = document.querySelector('.ad-form-header__preview > img');
+  var defaultSrcPreview = avatarPreview.src;
 
   var setAvatarPreview = function (reader) {
-    avatarPreviewElement.src = reader;
+    avatarPreview.src = reader;
   };
 
   var setDefaultPreview = function () {
-    avatarPreviewElement.src = defaultPreviewSrc;
+    avatarPreview.src = defaultSrcPreview;
   };
 
-  setFileUpload(avatarChooserElement, setAvatarPreview);
+  setFileUpload(avatarChooser, setAvatarPreview);
 
-  var photoContainerElement = document.querySelector('.ad-form__photo-container');
-  var photoChooserElement = document.querySelector('#images');
-  var photoPreviewElement = document.querySelector('.ad-form__photo');
-  var photoTemplate = document.querySelector('#photo').content;
+  var photoContainer = document.querySelector('.ad-form__photo-container');
+  var photoUpload = document.querySelector('#images');
+  var blockPhoto = document.querySelector('.ad-form__photo');
 
 
   var setApartPhoto = function (reader) {
-    var uploadedPhotos = photoContainerElement.querySelectorAll('.ad-form__photo');
+    var uploadedPhotos = photoContainer.querySelectorAll('.ad-form__photo');
+    var photoTemplate = document.querySelector('#photo').content;
     var photoElement = photoTemplate.cloneNode(true);
 
     if (uploadedPhotos.length <= LIMIT_PHOTO) {
-      photoPreviewElement.remove();
+      blockPhoto.remove();
       photoElement.querySelector('#ad-form__img').src = reader;
       var blockFragment = document.createDocumentFragment();
       blockFragment.appendChild(photoElement);
-      photoContainerElement.appendChild(blockFragment);
+      photoContainer.appendChild(blockFragment);
     }
   };
 
-  setFileUpload(photoChooserElement, setApartPhoto);
+  setFileUpload(photoUpload, setApartPhoto);
 
   var resetUploadedFiles = function () {
-    var uploadedPhotos = photoContainerElement.querySelectorAll('.ad-form__photo');
+    var uploadedPhotos = photoContainer.querySelectorAll('.ad-form__photo');
     uploadedPhotos.forEach(function (item) {
       item.remove();
     });
-    photoContainerElement.appendChild(photoPreviewElement);
+    photoContainer.appendChild(blockPhoto);
   };
 
   window.uploadPhoto = {

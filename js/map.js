@@ -4,7 +4,7 @@
   var ENTER_KEY_CODE = window.util.ENTER_KEY_CODE;
 
   var PINS_AMOUNT = 5;
-  var HousingPriceRange = {
+  var HOUSING_PRICE_RANGE = {
     'HIGH': {
       'MIN': 50000,
       'MAX': Infinity
@@ -23,19 +23,21 @@
   var renderPin = window.pin.renderPin;
   var load = window.backend.load;
   var setInputAddress = window.mainPinMove.setInputAddress;
-  var onPinMouseMove = window.mainPinMove.onPinMouseMove;
+  var clickInMapCoords = window.mainPinMove.clickInMapCoords;
   var onMouseUp = window.mainPinMove.onMouseUp;
   var removeChildren = window.util.removeChildren;
   var debounce = window.util.debounce;
-  var onLoadError = window.util.onLoadError;
 
-  var adFormElement = document.querySelector('.ad-form');
-  var mapElement = document.querySelector('.map');
-  var pinMainElement = mapElement.querySelector('.map__pin--main');
-  var fieldsetElements = document.querySelectorAll('fieldset');
-  var selectElements = document.querySelectorAll('select');
-  var mapPinsElement = mapElement.querySelector('.map__pins');
-  var filterElement = document.querySelector('.map__filters');
+  var errorHandler = window.util.errorHandler;
+
+
+  var adForm = document.querySelector('.ad-form');
+  var map = document.querySelector('.map');
+  var pinMain = map.querySelector('.map__pin--main');
+  var fieldsets = document.querySelectorAll('fieldset');
+  var selects = document.querySelectorAll('select');
+  var mapPins = map.querySelector('.map__pins');
+  var filter = document.querySelector('.map__filters');
 
   var pins = [];
 
@@ -45,44 +47,53 @@
     });
   };
 
-  var insertPinsInMap = function (arrayPins) {
+  var insertPinsInMap = function (pinsArr) {
     var fragment = document.createDocumentFragment();
-    var takeNumber = arrayPins.length > PINS_AMOUNT ? PINS_AMOUNT : arrayPins.length;
+    var takeNumber = pinsArr.length > PINS_AMOUNT ? PINS_AMOUNT : pinsArr.length;
     for (var i = 0; i < takeNumber; i++) {
-      fragment.appendChild(renderPin(arrayPins[i]));
+      fragment.appendChild(renderPin(pinsArr[i]));
     }
 
     return fragment;
   };
 
   var getPriceRange = function (option, price) {
-    return price >= HousingPriceRange[option].MIN && price <= HousingPriceRange[option].MAX;
+    return price >= HOUSING_PRICE_RANGE[option].MIN && price <= HOUSING_PRICE_RANGE[option].MAX;
   };
 
   var updatePins = debounce(function () {
-    var housingTypeElement = filterElement.querySelector('#housing-type');
-    var housingPriceElement = filterElement.querySelector('#housing-price');
-    var housingRoomsElement = filterElement.querySelector('#housing-rooms');
-    var housingGuestsElement = filterElement.querySelector('#housing-guests');
-    var housingCheckedFeatureElements = filterElement.querySelectorAll('input:checked');
+    var housingType = filter.querySelector('#housing-type');
+    var housingPrice = filter.querySelector('#housing-price');
+    var housingRooms = filter.querySelector('#housing-rooms');
+    var housingGuests = filter.querySelector('#housing-guests');
+    var housingCheckedFeatures = filter.querySelectorAll('input:checked');
 
-    var filteredHouses = pins
-    .filter(function (item) {
-      return (housingTypeElement.value === 'any' || item.offer.type === housingTypeElement.value) &&
-              (housingPriceElement.value === 'any' || getPriceRange(housingPriceElement.value.toUpperCase(), item.offer.price)) &&
-              (housingRoomsElement.value === 'any' || parseInt(housingRoomsElement.value, 10) === item.offer.rooms) &&
-              (housingGuestsElement.value === 'any' || parseInt(housingGuestsElement.value, 10) === item.offer.guests) &&
-              (Array.from(housingCheckedFeatureElements).every(function (elem) {
-                return item.offer.features.includes(elem.value);
-              }));
-    });
 
-    removeChildren(mapPinsElement);
-    mapPinsElement.appendChild(pinMainElement);
-    mapPinsElement.appendChild(insertPinsInMap(filteredHouses));
+    var filteredHouseArr = pins
+      .filter(function (item) {
+        return item.offer.type === housingType.value || housingType.value === 'any';
+      })
+      .filter(function (item) {
+        return housingPrice.value === 'any' || getPriceRange(housingPrice.value.toUpperCase(), item.offer.price);
+      })
+      .filter(function (item) {
+        return housingRooms.value === 'any' || parseInt(housingRooms.value, 10) === item.offer.rooms;
+      })
+      .filter(function (item) {
+        return housingGuests.value === 'any' || parseInt(housingGuests.value, 10) === item.offer.guests;
+      })
+      .filter(function (item) {
+        return Array.from(housingCheckedFeatures).every(function (elem) {
+          return item.offer.features.includes(elem.value);
+        });
+      });
+
+    removeChildren(mapPins);
+    mapPins.appendChild(pinMain);
+    mapPins.appendChild(insertPinsInMap(filteredHouseArr));
   });
 
-  filterElement.addEventListener('change', function () {
+  filter.addEventListener('change', function () {
     updatePins();
     var mapCard = document.querySelector('.map__card');
     if (mapCard !== null) {
@@ -90,43 +101,31 @@
     }
   });
 
-  var onRequestDataLoad = function () {
-    load(onLoadSuccess, onMainPinLoadError);
-
-    pinMainElement.removeEventListener('mousedown', onRequestDataLoad);
-  };
-
-  var onMainPinLoadError = function (error) {
-    onLoadError(error);
-
-    pinMainElement.addEventListener('mousedown', onRequestDataLoad);
-  };
-
   var onMainPinClick = function () {
-    resetDisable(fieldsetElements);
-    resetDisable(selectElements);
-    mapElement.classList.remove('map--faded');
-    adFormElement.classList.remove('ad-form--disabled');
-    setInputAddress();
-    onRequestDataLoad();
-    pinMainElement.removeEventListener('mousedown', onMainPinClick);
+    load(successHandler, errorHandler);
+    pinMain.removeEventListener('mousedown', onMainPinClick);
   };
 
-  var onLoadSuccess = function (data) {
+  var successHandler = function (data) {
     pins = data;
-    mapPinsElement.appendChild(insertPinsInMap(data));
+    resetDisable(fieldsets);
+    resetDisable(selects);
+    map.classList.remove('map--faded');
+    adForm.classList.remove('ad-form--disabled');
+    mapPins.appendChild(insertPinsInMap(data));
+    setInputAddress();
   };
 
 
-  pinMainElement.addEventListener('mousedown', onMainPinClick);
+  pinMain.addEventListener('mousedown', onMainPinClick);
 
-  pinMainElement.addEventListener('mousedown', function (evt) {
+  pinMain.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
-    document.addEventListener('mousemove', onPinMouseMove);
+    document.addEventListener('mousemove', clickInMapCoords);
     document.addEventListener('mouseup', onMouseUp);
   });
 
-  pinMainElement.addEventListener('keydown', function (evt) {
+  pinMain.addEventListener('keydown', function (evt) {
     if (evt.keyCode === ENTER_KEY_CODE) {
       onMainPinClick();
     }
@@ -134,6 +133,8 @@
 
   window.map = {
     insertPinsInMap: insertPinsInMap,
-    onMainPinClick: onMainPinClick
+    onMainPinClick: onMainPinClick,
+    map: map,
+    errorHandler: errorHandler
   };
 })();

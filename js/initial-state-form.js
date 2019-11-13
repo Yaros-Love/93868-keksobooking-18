@@ -3,19 +3,65 @@
 (function () {
   var Coordinate = window.coordinate.Coordinate;
   var PIN_MAIN_DEFAULT_COORDS = new Coordinate(570, 375);
-  var PIN_RADIUS = window.util.PIN_RADIUS;
   var MIN_LENGTH_TITLE = 30;
   var MAX_LENGTH_TITLE = 100;
   var MAX_PRICE = 1000000;
   var MIN_PRICE = 5000;
-  var RoomVariant = {
+
+  var adForm = document.querySelector('.ad-form');
+  var selects = document.querySelectorAll('select');
+  var fieldsets = document.querySelectorAll('fieldset');
+  var inputAddress = adForm.querySelector('#address');
+
+
+  var setDisable = function (elements) {
+    elements.forEach(function (item) {
+      item.disabled = true;
+    });
+  };
+  setDisable(selects);
+  setDisable(fieldsets);
+
+  var setAddressInactiveState = function () {
+    inputAddress.value = PIN_MAIN_DEFAULT_COORDS.x + ', ' + PIN_MAIN_DEFAULT_COORDS.y;
+  };
+  setAddressInactiveState();
+
+
+  var timeIn = adForm.querySelector('#timein');
+  var timeOut = adForm.querySelector('#timeout');
+
+  var setTimeSync = function (option) {
+    timeOut.options[option].selected = true;
+    timeIn.options[option].selected = true;
+  };
+
+
+  var title = adForm.querySelector('#title');
+
+  title.minLength = MIN_LENGTH_TITLE;
+  title.maxLength = MAX_LENGTH_TITLE;
+  title.required = true;
+
+  var typeSelect = adForm.querySelector('#type');
+  var price = adForm.querySelector('#price');
+  var roomNumberSelect = document.querySelector('#room_number');
+  var capacitySelect = document.querySelector('#capacity');
+  var capacityOptions = capacitySelect.querySelectorAll('option');
+
+  var roomVariant = {
     1: [1],
     2: [1, 2],
     3: [1, 2, 3],
     100: [0]
   };
 
-  var TypeHouse = {
+  price.setAttribute('required', 'required');
+  price.setAttribute('max', MAX_PRICE);
+  typeSelect.value = 'house';
+  price.setAttribute('min', MIN_PRICE);
+
+  var typeHouse = {
     'PALACE': {
       'text': 'Дворец',
       'minPrice': 10000
@@ -34,67 +80,16 @@
     }
   };
 
-
-  var adFormElement = document.querySelector('.ad-form');
-  var selectElements = document.querySelectorAll('select');
-  var fieldsetElements = document.querySelectorAll('fieldset');
-  var inputAddress = adFormElement.querySelector('#address');
-
-
-  var setDisable = function (elements) {
-    elements.forEach(function (item) {
-      item.disabled = true;
-    });
-  };
-  setDisable(selectElements);
-  setDisable(fieldsetElements);
-
-  var setAddressInactiveState = function () {
-    inputAddress.readOnly = true;
-    inputAddress.value = (PIN_MAIN_DEFAULT_COORDS.x + PIN_RADIUS) + ', ' + (PIN_MAIN_DEFAULT_COORDS.y + PIN_RADIUS);
-  };
-  setAddressInactiveState();
-
-
-  var timeInElement = adFormElement.querySelector('#timein');
-  var timeOutElement = adFormElement.querySelector('#timeout');
-
-  var setTimeSync = function (option) {
-    timeOutElement.options[option].selected = true;
-    timeInElement.options[option].selected = true;
-  };
-
-
-  var titleElement = adFormElement.querySelector('#title');
-
-  titleElement.minLength = MIN_LENGTH_TITLE;
-  titleElement.maxLength = MAX_LENGTH_TITLE;
-  titleElement.required = true;
-
-  var typeSelectElement = adFormElement.querySelector('#type');
-  var priceElement = adFormElement.querySelector('#price');
-  var roomNumberSelectElement = document.querySelector('#room_number');
-  var capacitySelectElement = document.querySelector('#capacity');
-  var capacityOptions = capacitySelectElement.querySelectorAll('option');
-
-  priceElement.required = true;
-  priceElement.max = MAX_PRICE;
-  typeSelectElement.value = 'house';
-  priceElement.min = MIN_PRICE;
-
-
   var setMinValuePlaceholder = function (option) {
-    priceElement.min = TypeHouse[option].minPrice;
-    priceElement.placeholder = TypeHouse[option].minPrice;
+    price.setAttribute('min', typeHouse[option].minPrice);
+    price.setAttribute('placeholder', typeHouse[option].minPrice);
   };
 
   var renderCapacity = function (roomValue) {
     capacityOptions.forEach(function (option) {
-      if (!option.disabled) {
-        option.disabled = true;
-      }
+      option.disabled = true;
     });
-    RoomVariant[roomValue].forEach(function (item) {
+    roomVariant[roomValue].forEach(function (item) {
       capacityOptions.forEach(function (opt) {
         if (parseInt(opt.value, 10) === item) {
           opt.disabled = false;
@@ -104,7 +99,7 @@
     });
   };
 
-  renderCapacity(roomNumberSelectElement.value);
+  renderCapacity(roomNumberSelect.value);
 
   window.initialStateForm = {
     PIN_MAIN_DEFAULT_COORDS: PIN_MAIN_DEFAULT_COORDS,
@@ -113,6 +108,6 @@
     setMinValuePlaceholder: setMinValuePlaceholder,
     renderCapacity: renderCapacity,
     setTimeSync: setTimeSync,
-    TypeHouse: TypeHouse
+    typeHouse: typeHouse
   };
 })();
