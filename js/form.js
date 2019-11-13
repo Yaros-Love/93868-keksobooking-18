@@ -7,7 +7,7 @@
   var setMinValuePlaceholder = window.initialStateForm.setMinValuePlaceholder;
   var setTimeSync = window.initialStateForm.setTimeSync;
   var renderCapacity = window.initialStateForm.renderCapacity;
-  var onRequestError = window.util.onRequestError;
+  var onLoadError = window.util.onLoadError;
   var isEscEvent = window.util.isEscEvent;
 
   var adFormElement = document.querySelector('.ad-form');
@@ -92,7 +92,7 @@
     save(new FormData(adFormElement), function () {
       resetPage();
       showSuccessMessage();
-    }, onRequestError);
+    }, onLoadError);
 
     pinMainElement.addEventListener('mousedown', onMainPinClick);
     evt.preventDefault();

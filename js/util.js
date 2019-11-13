@@ -35,7 +35,7 @@
   var mainElement = document.querySelector('main');
   var errorTemplateElement = document.querySelector('#error');
 
-  var onRequestError = function (error) {
+  var onLoadError = function (error) {
     var errorElement = errorTemplateElement.content.cloneNode(true);
     var errorMessageElement = errorElement.querySelector('.error__message');
     var errorButtonElement = errorElement.querySelector('.error__button');
@@ -97,7 +97,7 @@
     getRandomArray: getRandomArray,
     removeChildren: removeChildren,
     debounce: debounce,
-    onRequestError: onRequestError,
+    onLoadError: onLoadError,
     // addHandler: addHandler,
     isEscEvent: isEscEvent
   };

@@ -28,7 +28,7 @@
   var removeChildren = window.util.removeChildren;
   var debounce = window.util.debounce;
   // var addHandler = window.util.addHandler;
-  var onRequestError = window.util.onRequestError;
+  var onLoadError = window.util.onLoadError;
 
 
   var adFormElement = document.querySelector('.ad-form');
@@ -99,7 +99,7 @@
     mapElement.classList.remove('map--faded');
     adFormElement.classList.remove('ad-form--disabled');
     setInputAddress();
-    load(successHandler, onRequestError);
+    load(onLoadSuccess, onLoadError);
 
     // if (mainElement.querySelector('.error') === null) {
     //   pinMainElement.removeEventListener('mousedown', onMainPinClick);
@@ -109,7 +109,7 @@
     pinMainElement.removeEventListener('mousedown', onMainPinClick);
   };
 
-  var successHandler = function (data) {
+  var onLoadSuccess = function (data) {
     pins = data;
     mapPinsElement.appendChild(insertPinsInMap(data));
   };
