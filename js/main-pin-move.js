@@ -2,11 +2,11 @@
 (function () {
   var PIN_RADIUS = window.util.PIN_RADIUS;
   var PIN_ARROW = 22;
-  var PIN_HEIGHT_TOTAL = PIN_RADIUS + PIN_ARROW;
+  var PIN_HEIGHT_TOTAL = (PIN_RADIUS * 2) + PIN_ARROW;
   var LOCATION_X_MIN = 0;
   var LOCATION_X_MAX = document.querySelector('.map').offsetWidth;
-  var LOCATION_Y_MIN = 130 - 54;
-  var LOCATION_Y_MAX = 630 - 54;
+  var LOCATION_Y_MIN = 130 - (PIN_RADIUS + PIN_ARROW);
+  var LOCATION_Y_MAX = 630 - (PIN_RADIUS + PIN_ARROW);
 
   var Coordinate = window.coordinate.Coordinate;
 
@@ -17,18 +17,16 @@
     var address = getComputedStyle(pin);
     var x = parseInt(address.left, 10);
     var y = parseInt(address.top, 10);
-    x += Math.round(PIN_RADIUS / 2);
+    x += PIN_RADIUS;
     y += PIN_HEIGHT_TOTAL;
-
 
     return new Coordinate(x, y);
   };
 
   var setInputAddress = function () {
     var inputAddressElement = document.querySelector('#address');
-
-    inputAddressElement.readonly = 'readonly';
-    inputAddressElement.value = getAddressValue(pinMainElement).x + ', ' + getAddressValue(pinMainElement).y;
+    var addressValue = getAddressValue(pinMainElement);
+    inputAddressElement.value = addressValue.x + ', ' + addressValue.y;
   };
 
   var movePinTo = function (x, y) {
@@ -45,12 +43,12 @@
       y = LOCATION_Y_MAX;
     }
 
-    pinMainElement.style.left = (x - PIN_RADIUS / 2) + 'px';
-    pinMainElement.style.top = (y - PIN_RADIUS / 2) + 'px';
+    pinMainElement.style.left = Math.floor(x - PIN_RADIUS) + 'px';
+    pinMainElement.style.top = y - PIN_RADIUS + 'px';
     setInputAddress();
   };
 
-  var onPinMousemove = function (evt) {
+  var onPinMouseMove = function (evt) {
     var mapCoords = mapElement.getBoundingClientRect();
 
     var coords = {
@@ -63,14 +61,14 @@
   var onMouseUp = function (evt) {
     evt.preventDefault();
 
-    document.removeEventListener('mousemove', onPinMousemove);
+    document.removeEventListener('mousemove', onPinMouseMove);
     document.removeEventListener('mouseup', onMouseUp);
   };
 
   window.mainPinMove = {
     movePinTo: movePinTo,
     setInputAddress: setInputAddress,
-    onPinMousemove: onPinMousemove,
+    onPinMouseMove: onPinMouseMove,
     onMouseUp: onMouseUp
   };
 })();

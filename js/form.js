@@ -49,11 +49,11 @@
     var closeSuccessMessage = function () {
       mainElement.querySelector('.success').remove();
 
-      mainElement.removeEventListener('click', onPopupClick);
+      mainElement.removeEventListener('click', onPopupSuccessClick);
       document.removeEventListener('keydown', onPopupSuccessPressEsc);
     };
 
-    var onPopupClick = function () {
+    var onPopupSuccessClick = function () {
       closeSuccessMessage();
     };
 
@@ -61,7 +61,7 @@
       isEscEvent(evt, closeSuccessMessage);
     };
 
-    mainElement.addEventListener('click', onPopupClick);
+    mainElement.addEventListener('click', onPopupSuccessClick);
     document.addEventListener('keydown', onPopupSuccessPressEsc);
   };
 

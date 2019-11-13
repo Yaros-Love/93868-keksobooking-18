@@ -50,7 +50,8 @@
   setDisable(fieldsetElements);
 
   var setAddressInactiveState = function () {
-    inputAddress.value = (PIN_MAIN_DEFAULT_COORDS.x + Math.round(PIN_RADIUS / 2)) + ', ' + (PIN_MAIN_DEFAULT_COORDS.y + Math.round(PIN_RADIUS / 2));
+    inputAddress.readOnly = true;
+    inputAddress.value = (PIN_MAIN_DEFAULT_COORDS.x + PIN_RADIUS) + ', ' + (PIN_MAIN_DEFAULT_COORDS.y + PIN_RADIUS);
   };
   setAddressInactiveState();
 
@@ -76,7 +77,6 @@
   var capacitySelectElement = document.querySelector('#capacity');
   var capacityOptions = capacitySelectElement.querySelectorAll('option');
 
-
   priceElement.required = true;
   priceElement.max = MAX_PRICE;
   typeSelectElement.value = 'house';
@@ -90,7 +90,9 @@
 
   var renderCapacity = function (roomValue) {
     capacityOptions.forEach(function (option) {
-      option.disabled = true;
+      if (!option.disabled) {
+        option.disabled = true;
+      }
     });
     RoomVariant[roomValue].forEach(function (item) {
       capacityOptions.forEach(function (opt) {

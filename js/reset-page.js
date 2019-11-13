@@ -11,9 +11,25 @@
   var renderCapacity = window.initialStateForm.renderCapacity;
   var setTimeSync = window.initialStateForm.setTimeSync;
 
+  var adFormElement = document.querySelector('.ad-form');
+  var selectElements = document.querySelectorAll('select');
+  var fieldsetElements = document.querySelectorAll('fieldset');
+  var titleElement = adFormElement.querySelector('#title');
+  var priceElement = adFormElement.querySelector('#price');
+  var typeHouseElement = adFormElement.querySelector('#type');
+  var timeInElement = adFormElement.querySelector('#timein');
+  var textareaElement = adFormElement.querySelector('#description');
+  var mapElement = document.querySelector('.map');
+  var roomNumberSelectElement = document.querySelector('#room_number');
+  var formFeatureElements = adFormElement.querySelectorAll('.feature__checkbox');
+  var mapFilterElement = document.querySelector('.map__filters');
+
+
   var resetCheckboxes = function (checkboxesCollection) {
     checkboxesCollection.forEach(function (item) {
-      item.checked = false;
+      if (item.checked === true) {
+        item.checked = false;
+      }
     });
   };
 
@@ -23,9 +39,7 @@
     });
   };
 
-
   var resetPage = function () {
-
     var mapCardElement = document.querySelector('.map__card');
     if (mapCardElement !== null) {
       mapCardElement.remove();
@@ -35,42 +49,25 @@
     var pinMainElement = document.querySelector('.map__pin--main');
     removeChildren(mapPinsElement);
 
-    var selectElements = document.querySelectorAll('select');
-    var fieldsetElements = document.querySelectorAll('fieldset');
     setDisable(selectElements);
     setDisable(fieldsetElements);
 
-    var adFormElement = document.querySelector('.ad-form');
-
-    var formFeatureElements = adFormElement.querySelectorAll('.feature__checkbox');
     resetCheckboxes(formFeatureElements);
     removeInvalidClass(adFormElement.querySelectorAll('.ad-form--invalid'));
 
-    var roomNumberSelectElement = document.querySelector('#room_number');
     roomNumberSelectElement.value = '1';
     renderCapacity(roomNumberSelectElement.value);
 
-    var mapFilterElement = document.querySelector('.map__filters');
     mapFilterElement.reset();
-
     resetUploadedFiles();
     setDefaultPreview();
     setAddressInactiveState();
-
-    var mapElement = document.querySelector('.map');
 
     mapElement.classList.add('map--faded');
     adFormElement.classList.add('ad-form--disabled');
     mapPinsElement.appendChild(pinMainElement);
     pinMainElement.style.left = PIN_MAIN_DEFAULT_COORDS.x + 'px';
     pinMainElement.style.top = PIN_MAIN_DEFAULT_COORDS.y + 'px';
-
-
-    var titleElement = adFormElement.querySelector('#title');
-    var priceElement = adFormElement.querySelector('#price');
-    var typeHouseElement = adFormElement.querySelector('#type');
-    var timeInElement = adFormElement.querySelector('#timein');
-    var textareaElement = adFormElement.querySelector('#description');
 
     titleElement.value = '';
     priceElement.value = '';

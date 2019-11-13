@@ -6,7 +6,7 @@
   var ENTER_KEY_CODE = 13;
   var ESC_KEY_CODE = 27;
   var DEBOUNCE_INTERVAL = 500; // ms
-  var PIN_RADIUS = 65;
+  var PIN_RADIUS = Math.floor(65 / 2);
 
   var debounce = function (cb) {
     var lastTimeout = null;
@@ -29,9 +29,6 @@
     }
   };
 
-  // var addHandler = function (element, cb) {
-  //   element.addEventListener('click', cb);
-  // };
   var mainElement = document.querySelector('main');
   var errorTemplateElement = document.querySelector('#error');
 
@@ -64,21 +61,6 @@
     document.addEventListener('keydown', onPopupPressEsc);
   };
 
-  var getRandomArray = function (array) {
-    var randomNumbers = [];
-    var max = Math.floor(Math.random() * array.length);
-    for (var i = 0; i <= max; i++) {
-      randomNumbers.push(array[i]);
-    }
-    return randomNumbers;
-  };
-
-  var getRandomInt = function (min, max) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  };
 
   var removeChildren = function (node) {
     while (node.firstChild) {
@@ -93,12 +75,9 @@
     ENTER_KEY_CODE: ENTER_KEY_CODE,
     ESC_KEY_CODE: ESC_KEY_CODE,
     PIN_RADIUS: PIN_RADIUS,
-    getRandomInt: getRandomInt,
-    getRandomArray: getRandomArray,
     removeChildren: removeChildren,
     debounce: debounce,
     onLoadError: onLoadError,
-    // addHandler: addHandler,
     isEscEvent: isEscEvent
   };
 })();

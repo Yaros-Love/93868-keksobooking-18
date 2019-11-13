@@ -23,13 +23,11 @@
   var renderPin = window.pin.renderPin;
   var load = window.backend.load;
   var setInputAddress = window.mainPinMove.setInputAddress;
-  var onPinMousemove = window.mainPinMove.onPinMousemove;
+  var onPinMouseMove = window.mainPinMove.onPinMouseMove;
   var onMouseUp = window.mainPinMove.onMouseUp;
   var removeChildren = window.util.removeChildren;
   var debounce = window.util.debounce;
-  // var addHandler = window.util.addHandler;
   var onLoadError = window.util.onLoadError;
-
 
   var adFormElement = document.querySelector('.ad-form');
   var mapElement = document.querySelector('.map');
@@ -47,11 +45,11 @@
     });
   };
 
-  var insertPinsInMap = function (array) {
+  var insertPinsInMap = function (arrayPins) {
     var fragment = document.createDocumentFragment();
-    var takeNumber = array.length > PINS_AMOUNT ? PINS_AMOUNT : array.length;
+    var takeNumber = arrayPins.length > PINS_AMOUNT ? PINS_AMOUNT : arrayPins.length;
     for (var i = 0; i < takeNumber; i++) {
-      fragment.appendChild(renderPin(array[i]));
+      fragment.appendChild(renderPin(arrayPins[i]));
     }
 
     return fragment;
@@ -92,6 +90,17 @@
     }
   });
 
+  var onRequestDataLoad = function () {
+    load(onLoadSuccess, onMainPinLoadError);
+
+    pinMainElement.removeEventListener('mousedown', onRequestDataLoad);
+  };
+
+  var onMainPinLoadError = function (error) {
+    onLoadError(error);
+
+    pinMainElement.addEventListener('mousedown', onRequestDataLoad);
+  };
 
   var onMainPinClick = function () {
     resetDisable(fieldsetElements);
@@ -99,13 +108,7 @@
     mapElement.classList.remove('map--faded');
     adFormElement.classList.remove('ad-form--disabled');
     setInputAddress();
-    load(onLoadSuccess, onLoadError);
-
-    // if (mainElement.querySelector('.error') === null) {
-    //   pinMainElement.removeEventListener('mousedown', onMainPinClick);
-    // } else {
-    //   addHandler(pinMainElement, onMainPinClick);
-    // }
+    onRequestDataLoad();
     pinMainElement.removeEventListener('mousedown', onMainPinClick);
   };
 
@@ -119,7 +122,7 @@
 
   pinMainElement.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
-    document.addEventListener('mousemove', onPinMousemove);
+    document.addEventListener('mousemove', onPinMouseMove);
     document.addEventListener('mouseup', onMouseUp);
   });
 
