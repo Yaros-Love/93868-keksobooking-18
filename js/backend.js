@@ -3,7 +3,7 @@
 (function () {
   var URL = 'https://js.dump.academy/keksobooking/data';
   var URL_POST = 'https://js.dump.academy/keksobooking';
-  var TIMEOUT = 10000;
+  var TIMEOUT = 10000; // ms
 
   var setConnection = function (onLoad, onError, method, url) {
     var xhr = new XMLHttpRequest();
@@ -13,15 +13,21 @@
       if (xhr.status === 200) {
         onLoad(xhr.response);
       } else {
-        onError('Статус ответа: ' + xhr.status + ' ' + xhr.statusText);
+        setTimeout(function () {
+          onError('Статус ответа: ' + xhr.status + ' ' + xhr.statusText);
+        }, 200);
       }
     });
 
     xhr.addEventListener('error', function () {
-      onError('Произошла ошибка соединения');
+      setTimeout(function () {
+        onError('Произошла ошибка соединения');
+      }, 200);
     });
     xhr.addEventListener('timeout', function () {
-      onError('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
+      setTimeout(function () {
+        onError('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
+      }, 200);
     });
 
     xhr.timeout = TIMEOUT;
