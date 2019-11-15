@@ -10,6 +10,7 @@
   var setMinValuePlaceholder = window.initialStateForm.setMinValuePlaceholder;
   var renderCapacity = window.initialStateForm.renderCapacity;
   var setTimeSync = window.initialStateForm.setTimeSync;
+  var removeCard = window.card.removeCard;
 
   var adFormElement = document.querySelector('.ad-form');
   var selectElements = document.querySelectorAll('select');
@@ -40,10 +41,7 @@
   };
 
   var resetPage = function () {
-    var mapCardElement = document.querySelector('.map__card');
-    if (mapCardElement !== null) {
-      mapCardElement.remove();
-    }
+    removeCard();
 
     var mapPinsElement = document.querySelector('.map__pins');
     var pinMainElement = document.querySelector('.map__pin--main');

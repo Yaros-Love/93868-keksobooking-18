@@ -1,8 +1,8 @@
 'use strict';
 
 (function () {
-  var IMG_WIDTH = 40;
-  var IMG_HEIGHT = 70;
+  var IMAGE_WIDTH = 40;
+  var IMAGE_HEIGHT = 70;
   var ENTER_KEY_CODE = 13;
   var ESC_KEY_CODE = 27;
   var DEBOUNCE_INTERVAL = 500; // ms
@@ -25,6 +25,12 @@
 
   var isEscEvent = function (evt, action) {
     if (evt.keyCode === ESC_KEY_CODE) {
+      action();
+    }
+  };
+
+  var isEnterEvent = function (evt, action) {
+    if (evt.keyCode === ENTER_KEY_CODE) {
       action();
     }
   };
@@ -63,21 +69,20 @@
 
 
   var removeChildren = function (node) {
-    while (node.firstChild) {
-      node.firstChild.remove();
-    }
+    node.innerHTML = '';
   };
 
 
   window.util = {
-    IMG_WIDTH: IMG_WIDTH,
-    IMG_HEIGHT: IMG_HEIGHT,
+    IMAGE_WIDTH: IMAGE_WIDTH,
+    IMAGE_HEIGHT: IMAGE_HEIGHT,
     ENTER_KEY_CODE: ENTER_KEY_CODE,
     ESC_KEY_CODE: ESC_KEY_CODE,
     PIN_RADIUS: PIN_RADIUS,
     removeChildren: removeChildren,
     debounce: debounce,
     onLoadError: onLoadError,
-    isEscEvent: isEscEvent
+    isEscEvent: isEscEvent,
+    isEnterEvent: isEnterEvent
   };
 })();

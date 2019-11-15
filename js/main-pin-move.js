@@ -12,6 +12,7 @@
 
   var mapElement = document.querySelector('.map');
   var pinMainElement = mapElement.querySelector('.map__pin--main');
+  var inputAddressElement = document.querySelector('#address');
 
   var getAddressValue = function (pin) {
     var address = getComputedStyle(pin);
@@ -24,7 +25,6 @@
   };
 
   var setInputAddress = function () {
-    var inputAddressElement = document.querySelector('#address');
     var addressValue = getAddressValue(pinMainElement);
     inputAddressElement.value = addressValue.x + ', ' + addressValue.y;
   };

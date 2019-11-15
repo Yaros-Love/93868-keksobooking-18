@@ -1,8 +1,10 @@
 'use strict';
 
 (function () {
-  var Coordinate = window.coordinate.Coordinate;
-  var PIN_MAIN_DEFAULT_COORDS = new Coordinate(570, 375);
+  var PIN_MAIN_DEFAULT_COORDS = {
+    x: 570,
+    y: 375
+  };
   var PIN_RADIUS = window.util.PIN_RADIUS;
   var MIN_LENGTH_TITLE = 30;
   var MAX_LENGTH_TITLE = 100;
@@ -34,11 +36,10 @@
     }
   };
 
-
   var adFormElement = document.querySelector('.ad-form');
   var selectElements = document.querySelectorAll('select');
   var fieldsetElements = document.querySelectorAll('fieldset');
-  var inputAddress = adFormElement.querySelector('#address');
+  var inputAddressElement = adFormElement.querySelector('#address');
 
 
   var setDisable = function (elements) {
@@ -50,8 +51,8 @@
   setDisable(fieldsetElements);
 
   var setAddressInactiveState = function () {
-    inputAddress.readOnly = true;
-    inputAddress.value = (PIN_MAIN_DEFAULT_COORDS.x + PIN_RADIUS) + ', ' + (PIN_MAIN_DEFAULT_COORDS.y + PIN_RADIUS);
+    inputAddressElement.readOnly = true;
+    inputAddressElement.value = (PIN_MAIN_DEFAULT_COORDS.x + PIN_RADIUS) + ', ' + (PIN_MAIN_DEFAULT_COORDS.y + PIN_RADIUS);
   };
   setAddressInactiveState();
 
@@ -75,7 +76,7 @@
   var priceElement = adFormElement.querySelector('#price');
   var roomNumberSelectElement = document.querySelector('#room_number');
   var capacitySelectElement = document.querySelector('#capacity');
-  var capacityOptions = capacitySelectElement.querySelectorAll('option');
+  var capacityOptionElements = capacitySelectElement.querySelectorAll('option');
 
   priceElement.required = true;
   priceElement.max = MAX_PRICE;
@@ -89,13 +90,13 @@
   };
 
   var renderCapacity = function (roomValue) {
-    capacityOptions.forEach(function (option) {
+    capacityOptionElements.forEach(function (option) {
       if (!option.disabled) {
         option.disabled = true;
       }
     });
     RoomVariant[roomValue].forEach(function (item) {
-      capacityOptions.forEach(function (opt) {
+      capacityOptionElements.forEach(function (opt) {
         if (parseInt(opt.value, 10) === item) {
           opt.disabled = false;
           opt.selected = true;
