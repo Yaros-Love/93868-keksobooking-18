@@ -88,8 +88,8 @@
       },
       function (item) {
         return Array.from(housingCheckedFeatureElements).every(function (elem) {
-                 return item.offer.features.includes(elem.value);
-             });
+          return item.offer.features.includes(elem.value);
+        });
       }
     ];
 
