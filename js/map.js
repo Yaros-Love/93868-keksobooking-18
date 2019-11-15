@@ -1,8 +1,6 @@
 'use strict';
 
 (function () {
-  // var ENTER_KEY_CODE = window.util.ENTER_KEY_CODE;
-
   var PINS_AMOUNT = 5;
   var HousingPriceRange = {
     'HIGH': {
