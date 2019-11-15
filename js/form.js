@@ -17,14 +17,13 @@
   var timeOutElement = adFormElement.querySelector('#timeout');
   var typeSelectElement = adFormElement.querySelector('#type');
 
-  timeInElement.addEventListener('input', function (evt) {
+  var onTimeChange = function (evt) {
     var option = evt.currentTarget.selectedIndex;
     setTimeSync(option);
-  });
-  timeOutElement.addEventListener('input', function (evt) {
-    var option = evt.currentTarget.selectedIndex;
-    setTimeSync(option);
-  });
+  };
+
+  timeInElement.addEventListener('input', onTimeChange);
+  timeOutElement.addEventListener('input', onTimeChange);
 
   typeSelectElement.addEventListener('input', function (evt) {
     var option = evt.currentTarget.value;

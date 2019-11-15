@@ -32,6 +32,7 @@
   var renderCard = function (card) {
     var cardElement = cardTemplateElement.cloneNode(true);
     var popupFeaturesElement = cardElement.querySelector('.popup__features');
+    var popupPhotosElement = cardElement.querySelector('.popup__photos');
 
     cardElement.querySelector('.popup__title').textContent = card.offer.title;
     cardElement.querySelector('.popup__text--address').textContent = card.offer.address;
@@ -49,11 +50,11 @@
     });
     cardElement.querySelector('.popup__description').textContent = card.offer.description;
     // удаляем шаблон изображения
-    removeChildren(cardElement.querySelector('.popup__photos'));
+    removeChildren(popupPhotosElement);
     card.offer.photos.forEach(function (item) {
       var photo = popupPhotoImageElement.cloneNode(true);
       photo.src = item;
-      cardElement.querySelector('.popup__photos').appendChild(photo);
+      popupPhotosElement.appendChild(photo);
     });
     cardElement.querySelector('.popup__avatar').src = card.author.avatar;
 
