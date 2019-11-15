@@ -55,8 +55,7 @@
 
   var insertPinsInMap = function (arrayPins) {
     var fragment = document.createDocumentFragment();
-    var takeNumber = arrayPins.length;
-    for (var i = 0; i < takeNumber; i++) {
+    for (var i = 0; i < arrayPins.length; i++) {
       fragment.appendChild(renderPin(arrayPins[i]));
     }
 
