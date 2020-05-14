@@ -77,10 +77,10 @@ console.log(objectItem.location.y)
   return moksCollection;
 }
 creationMoks();
-
+console.log(creationMoks())
 //контент шаблона
 var pinTamplate = document.querySelector('#pin').content;
-//console.log(pinTamplate)
+
 //ф-я создания елемента в разметки
 var creatElementsPins = function (tamplate, arrayObj, elementForPush) {
   for (var j = 0; j < arrayObj.length; j++) {
@@ -93,5 +93,49 @@ var creatElementsPins = function (tamplate, arrayObj, elementForPush) {
     elementForPush.appendChild(pointInTheMap);
   }
 }
-
 creatElementsPins(pinTamplate, creationMoks(), PIN_AREA)
+
+
+//отрисовка карточек объявлений
+//находим шаблом карточки, и ее контент
+var cardTamlateContent = document.querySelector('#card').content;
+//находим элемент перед которым нужно вставлять новые элементы
+var insertCardsBeforMe = document.querySelector('.map__filters-container');
+
+//ф-я создания и отрисовки нового элемента
+var creatCard = function (template, arrayObjects, elementForPush) {
+  let cardItem = template.cloneNode(true);
+  //заголовок
+  cardItem.querySelector('.popup__title').textContent = arrayObjects[0].offer.title;
+  //цена жилья
+  cardItem.querySelector('.popup__text--price').textContent = arrayObjects[0].offer.price + ' р/ночь';
+//типы жилья
+  if (arrayObjects[0].offer.type === 'flat') {
+    cardItem.querySelector('.popup__type').textContent = 'Квартира';
+  }
+  if (arrayObjects[0].offer.type === 'bungalo') {
+    cardItem.querySelector('.popup__type').textContent = 'Бунгало';
+  }
+  if (arrayObjects[0].offer.type === 'house') {
+    cardItem.querySelector('.popup__type').textContent = 'Дом';
+  }
+  if (arrayObjects[0].offer.type === 'palace') {
+    cardItem.querySelector('.popup__type').textContent = 'Дворец';
+  }
+  //комнаты и гости
+  cardItem.querySelector('.popup__text--capacity').textContent = arrayObjects[0].offer.rooms + ' комнаты для ' + arrayObjects[0].offer.guests + ' гостей';
+  //заезд, выезд
+  cardItem.querySelector('.popup__text--time').textContent = 'Заезд после ' + arrayObjects[0].offer.checkin + ', выезд до ' + arrayObjects[0].offer.checkout;
+  //удобства
+  cardItem.querySelector('.popup__features').textContent = arrayObjects[0].offer.features;
+  //описание
+  cardItem.querySelector('.popup__description').textContent = arrayObjects[0].offer.description;
+  //фото
+  cardItem.querySelector('.popup__photo').src = 'http://o0.github.io/assets/images/tokyo/hotel1.jpg';
+  //аватарка
+  cardItem.querySelector('.popup__avatar').src = arrayObjects[0].autor.avatar;
+  //добавляем в разметку перед след элементом:
+  elementForPush.before(cardItem)
+}
+
+creatCard(cardTamlateContent, creationMoks(), insertCardsBeforMe)
