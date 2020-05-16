@@ -1,9 +1,16 @@
 //'use strict';
-//данные для моков
+//данные для моков***************************************************
+
 const ADRESS_CONST = '600, 350';
 const PRICE_ARR = [3000, 2970, 1098, 1000];
 const TITLE_CONST = 'Какое-то интересное предложение'
 const TYPE_ARR = ['palace', 'flat', 'house', 'bungalo'];
+const TYPE_ARR_RUS = {
+  'palace' : 'Дворец',
+  'flat' : 'Квартира',
+  'house' : 'Дом',
+  'bungalo' : 'Бунгало'
+};
 const ROOMS_ARR = [1, 2, 3, 4, 5, 6];
 const GUESTS_ARR = [1, 2, 3, 4, 5, 6, 7, 8];
 const CHECKIN_ARR = ['12:00', '13:00', '14:00'];
@@ -15,6 +22,12 @@ const HEIGTH_BLOCK_Y = {
   min: 130,
   max: 630
 }
+//диапазон фотографий в массивах рандомной длинны
+const MIN_PHOTOS = 1;
+const MAX_PHOTOS = 10;
+//test
+console.log(TYPE_ARR_RUS)
+/********************************************************************/
 //находим блок с меткой
 const PIN_AREA = document.querySelector('.map__pins');
 
@@ -43,6 +56,15 @@ var creationMoks = function () {
   var moksCollection = [];
   for (var i = 0; i < 8; i++) {
     var objectItem = {};
+    //заполняем массив рандомной длинны фотографиями
+  var randomLengthPhotos = function(PHOTOS_ARR) {
+    var photosForObjects = [];
+    for (var k = 0; k < randomItemMinMax(MIN_PHOTOS, MAX_PHOTOS); k++) {
+      photosForObjects.push(randomItem(PHOTOS_ARR));
+    }
+    console.log(photosForObjects);
+    return photosForObjects
+  }
     //об авторе
     objectItem.autor = {
       avatar: 'img/avatars/user0' + (i + 1) + '.png'
@@ -59,7 +81,7 @@ var creationMoks = function () {
       checkout: randomItem(CHECKOUT_ARR),
       features: randomItem(FEATURES_ARR),
       description: DESCRIPTIO_CONST,
-      photos: randomItem(PHOTOS_ARR)
+      photos: randomLengthPhotos(PHOTOS_ARR)
     }
     //местоположение
     //находим ширину документа и блока с меткой
@@ -109,19 +131,8 @@ var creatCard = function (template, arrayObjects, elementForPush) {
   cardItem.querySelector('.popup__title').textContent = arrayObjects[0].offer.title;
   //цена жилья
   cardItem.querySelector('.popup__text--price').textContent = arrayObjects[0].offer.price + ' р/ночь';
-//типы жилья
-  if (arrayObjects[0].offer.type === 'flat') {
-    cardItem.querySelector('.popup__type').textContent = 'Квартира';
-  }
-  if (arrayObjects[0].offer.type === 'bungalo') {
-    cardItem.querySelector('.popup__type').textContent = 'Бунгало';
-  }
-  if (arrayObjects[0].offer.type === 'house') {
-    cardItem.querySelector('.popup__type').textContent = 'Дом';
-  }
-  if (arrayObjects[0].offer.type === 'palace') {
-    cardItem.querySelector('.popup__type').textContent = 'Дворец';
-  }
+  //типы жилья
+  cardItem.querySelector('.popup__type').textContent = TYPE_ARR_RUS[arrayObjects[0].offer.type];
   //комнаты и гости
   cardItem.querySelector('.popup__text--capacity').textContent = arrayObjects[0].offer.rooms + ' комнаты для ' + arrayObjects[0].offer.guests + ' гостей';
   //заезд, выезд
@@ -131,7 +142,15 @@ var creatCard = function (template, arrayObjects, elementForPush) {
   //описание
   cardItem.querySelector('.popup__description').textContent = arrayObjects[0].offer.description;
   //фото
-  cardItem.querySelector('.popup__photo').src = 'http://o0.github.io/assets/images/tokyo/hotel1.jpg';
+  var addNewPhotos = function () {
+    cardItem.querySelector('.popup__photo').src = arrayObjects[0].offer.photos[randomItemMinMax(0, arrayObjects[0].offer.photos.length)];
+    for (var i = 0; i < arrayObjects[0].offer.photos.length; i++){
+    var newPhotoElement = cardItem.querySelector('.popup__photo').cloneNode(true);
+    newPhotoElement.src = arrayObjects[0].offer.photos[i];
+    cardItem.querySelector('.popup__photos').appendChild(newPhotoElement);
+    }
+  }
+  addNewPhotos();
   //аватарка
   cardItem.querySelector('.popup__avatar').src = arrayObjects[0].autor.avatar;
   //добавляем в разметку перед след элементом:
