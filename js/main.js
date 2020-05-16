@@ -143,7 +143,7 @@ var creatCard = function (template, arrayObjects, elementForPush) {
   cardItem.querySelector('.popup__description').textContent = arrayObjects[0].offer.description;
   //фото
   var addNewPhotos = function () {
-    cardItem.querySelector('.popup__photo').src = arrayObjects[0].offer.photos[randomItemMinMax(0, arrayObjects[0].offer.photos.length)];
+    cardItem.querySelector('.popup__photo').src = arrayObjects[0].offer.photos[randomItemMinMax(0, arrayObjects[0].offer.photos.length - 1)];
     for (var i = 0; i < arrayObjects[0].offer.photos.length; i++){
     var newPhotoElement = cardItem.querySelector('.popup__photo').cloneNode(true);
     newPhotoElement.src = arrayObjects[0].offer.photos[i];
