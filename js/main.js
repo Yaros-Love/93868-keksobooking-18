@@ -1,4 +1,4 @@
-//'use strict';
+'use strict';
 //данные для моков***************************************************
 
 const ADRESS_CONST = '600, 350';
@@ -6,10 +6,10 @@ const PRICE_ARR = [3000, 2970, 1098, 1000];
 const TITLE_CONST = 'Какое-то интересное предложение'
 const TYPE_ARR = ['palace', 'flat', 'house', 'bungalo'];
 const TYPE_ARR_RUS = {
-  'palace' : 'Дворец',
-  'flat' : 'Квартира',
-  'house' : 'Дом',
-  'bungalo' : 'Бунгало'
+  'palace': 'Дворец',
+  'flat': 'Квартира',
+  'house': 'Дом',
+  'bungalo': 'Бунгало'
 };
 const ROOMS_ARR = [1, 2, 3, 4, 5, 6];
 const GUESTS_ARR = [1, 2, 3, 4, 5, 6, 7, 8];
@@ -28,6 +28,7 @@ const MAX_PHOTOS = 10;
 //test
 console.log(TYPE_ARR_RUS)
 /********************************************************************/
+
 //находим блок с меткой
 const PIN_AREA = document.querySelector('.map__pins');
 
@@ -37,7 +38,7 @@ const MAP_PIN_HEIGTH = 70;
 const MAP_PIN_WIDTH = 50;
 
 //убираем класс у .map
-var mapActiv = document.querySelector('.map').classList.remove('map--faded');
+// var mapActiv = document.querySelector('.map').classList.remove('map--faded');
 
 //ф-я рандомного значения из массива
 var randomItem = function (arrayItems) {
@@ -51,20 +52,19 @@ var randomItemMinMax = function (min, max) {
   return Math.floor(randItem);
 }
 
-//ф-я создания моков, обЪекты поинтов на карте
+//ф-я создания моков, объекты поинтов на карте
 var creationMoks = function () {
   var moksCollection = [];
   for (var i = 0; i < 8; i++) {
     var objectItem = {};
     //заполняем массив рандомной длинны фотографиями
-  var randomLengthPhotos = function(PHOTOS_ARR) {
-    var photosForObjects = [];
-    for (var k = 0; k < randomItemMinMax(MIN_PHOTOS, MAX_PHOTOS); k++) {
-      photosForObjects.push(randomItem(PHOTOS_ARR));
+    var randomLengthPhotos = function (PHOTOS_ARR) {
+      var photosForObjects = [];
+      for (var k = 0; k < randomItemMinMax(MIN_PHOTOS, MAX_PHOTOS); k++) {
+        photosForObjects.push(randomItem(PHOTOS_ARR));
+      }
+      return photosForObjects
     }
-    console.log(photosForObjects);
-    return photosForObjects
-  }
     //об авторе
     objectItem.autor = {
       avatar: 'img/avatars/user0' + (i + 1) + '.png'
@@ -91,7 +91,6 @@ var creationMoks = function () {
       x: randomItemMinMax(minX, maxX),
       y: randomItemMinMax(HEIGTH_BLOCK_Y.min, HEIGTH_BLOCK_Y.max)
     }
-console.log(objectItem.location.y)
     //добавляем объекты в массив
     moksCollection.push(objectItem)
   }
@@ -116,7 +115,6 @@ var creatElementsPins = function (tamplate, arrayObj, elementForPush) {
   }
 }
 creatElementsPins(pinTamplate, creationMoks(), PIN_AREA)
-
 
 //отрисовка карточек объявлений
 //находим шаблом карточки, и ее контент
@@ -144,10 +142,10 @@ var creatCard = function (template, arrayObjects, elementForPush) {
   //фото
   var addNewPhotos = function () {
     cardItem.querySelector('.popup__photo').src = arrayObjects[0].offer.photos[randomItemMinMax(0, arrayObjects[0].offer.photos.length - 1)];
-    for (var i = 0; i < arrayObjects[0].offer.photos.length; i++){
-    var newPhotoElement = cardItem.querySelector('.popup__photo').cloneNode(true);
-    newPhotoElement.src = arrayObjects[0].offer.photos[i];
-    cardItem.querySelector('.popup__photos').appendChild(newPhotoElement);
+    for (var i = 0; i < arrayObjects[0].offer.photos.length; i++) {
+      var newPhotoElement = cardItem.querySelector('.popup__photo').cloneNode(true);
+      newPhotoElement.src = arrayObjects[0].offer.photos[i];
+      cardItem.querySelector('.popup__photos').appendChild(newPhotoElement);
     }
   }
   addNewPhotos();
@@ -158,3 +156,50 @@ var creatCard = function (template, arrayObjects, elementForPush) {
 }
 
 creatCard(cardTamlateContent, creationMoks(), insertCardsBeforMe)
+
+// обытия и валидация
+/**************************************************************************/
+var ENTER_KEYCODE = 13;
+// находим элементы для активации
+var MAP_PIN_MAIN_ELEM = document.querySelector('.map__pin--main');
+var MAP_ELEM = document.querySelector('.map');
+var ADD_FORM_ELEM = document.querySelector('.ad-form');
+var MAP_FILTERS_ELEM = document.querySelector('.map__filters');
+var FIELDSET_ELEMENTS = ADD_FORM_ELEM.querySelectorAll('fieldset');
+
+///ф-я, в активное состояние страницы
+var showMapByPress = function () {
+  MAP_ELEM.classList.remove('map--faded');
+  ADD_FORM_ELEM.classList.remove('ad-form--disabled');
+  MAP_FILTERS_ELEM.classList.remove('ad-form--disabled');
+  for (var fieldsets of FIELDSET_ELEMENTS) {
+    fieldsets.removeAttribute("disabled");
+  }
+}
+//слушатель по нажатию мыши на метку
+MAP_PIN_MAIN_ELEM.addEventListener('mousedown', showMapByPress)
+
+// слушатель по нажатию enter
+MAP_PIN_MAIN_ELEM.addEventListener('keydown', function (evt) {
+  if (evt.keyCode === 13) {
+    showMapByPress()
+  }
+})
+
+// устанавливаем значение поля адреса по умолчанию, центр метки до активании
+var ADDRESS_INPUT = document.querySelector('#address');
+
+
+///находим размеры метки
+var MAP_PIN_MAIN_WIDTH = MAP_PIN_MAIN_ELEM.offsetWidth;
+var MAP_PIN_MAIN_HEIGTH = MAP_PIN_MAIN_ELEM.offsetHeight;
+var MAP_LEYER = document.querySelector('.map__overlay');
+
+var positionXDefault = function () {
+  return Math.floor(MAP_PIN_MAIN_ELEM.offsetLeft + MAP_PIN_MAIN_WIDTH*0.5)
+}
+var positionYDefault = function () {
+  return Math.floor(MAP_PIN_MAIN_ELEM.offsetTop + MAP_PIN_MAIN_HEIGTH*0.5)
+}
+
+ADDRESS_INPUT.value = positionXDefault() + ', ' + positionYDefault();
