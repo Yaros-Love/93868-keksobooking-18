@@ -1,41 +1,46 @@
 'use strict';
 //данные для моков***************************************************
 
-const ADRESS_CONST = '600, 350';
-const PRICE_ARR = [3000, 2970, 1098, 1000];
-const TITLE_CONST = 'Какое-то интересное предложение'
-const TYPE_ARR = ['palace', 'flat', 'house', 'bungalo'];
-const TYPE_ARR_RUS = {
+var ADRESS = '600, 350';
+var PRICE = [3000, 2970, 1098, 1000];
+var TITLE = 'Какое-то интересное предложение'
+var TYPE = ['palace', 'flat', 'house', 'bungalo'];
+var TYPE_RUS = {
   'palace': 'Дворец',
   'flat': 'Квартира',
   'house': 'Дом',
   'bungalo': 'Бунгало'
 };
-const ROOMS_ARR = [1, 2, 3, 4, 5, 6];
-const GUESTS_ARR = [1, 2, 3, 4, 5, 6, 7, 8];
-const CHECKIN_ARR = ['12:00', '13:00', '14:00'];
-const CHECKOUT_ARR = ['12:00', '13:00', '14:00'];
-const FEATURES_ARR = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
-const DESCRIPTIO_CONST = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Egestas diam in arcu cursus euismod quis viverra nibh. Placerat in egestas erat imperdiet. Non odio euismod lacinia at quis risus sed. Vel risus commodo viverra maecenas accumsan lacus vel facilisis volutpat.';
-const PHOTOS_ARR = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
-const HEIGTH_BLOCK_Y = {
+var ROOMS = [1, 2, 3, 4, 5, 6];
+var GUESTS = [1, 2, 3, 4, 5, 6, 7, 8];
+var CHECKINS = ['12:00', '13:00', '14:00'];
+var CHECKOUTS = ['12:00', '13:00', '14:00'];
+var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
+var DESCRIPTIO = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Egestas diam in arcu cursus euismod quis viverra nibh. Placerat in egestas erat imperdiet. Non odio euismod lacinia at quis risus sed. Vel risus commodo viverra maecenas accumsan lacus vel facilisis volutpat.';
+var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
+var HEIGTH_BLOCK_Y = {
   min: 130,
   max: 630
 }
 //диапазон фотографий в массивах рандомной длинны
-const MIN_PHOTOS = 1;
-const MAX_PHOTOS = 10;
-//test
-console.log(TYPE_ARR_RUS)
+var MIN_PHOTOS = 1;
+var MAX_PHOTOS = 10;
+
+//находим ширину документа и блока с меткой ......вынести макс и мин в константы
+var MIN_X = 0;
+var MAX_X = document.querySelector('.map__overlay').offsetWidth;
+
+//количество меток на карте
+var moksCount = 8;
 /********************************************************************/
 
 //находим блок с меткой
-const PIN_AREA = document.querySelector('.map__pins');
+var MAP_PINS_ELEMENT = document.querySelector('.map__pins');
 
 //высота метки в разметке
-const MAP_PIN_HEIGTH = 70;
+var MAP_PIN_HEIGTH = 70;
 //ширина метки в разметке
-const MAP_PIN_WIDTH = 50;
+var MAP_PIN_WIDTH = 50;
 
 //убираем класс у .map
 // var mapActiv = document.querySelector('.map').classList.remove('map--faded');
@@ -48,47 +53,47 @@ var randomItem = function (arrayItems) {
 //ф-я рандома в диапазоне
 var randomItemMinMax = function (min, max) {
   //  случайное число от min до (max+1)
-  let randItem = min + Math.random() * (max + 1 - min);
+  var randItem = min + Math.random() * (max + 1 - min);
   return Math.floor(randItem);
 }
 
+//ф-я создания массива с рандомным числом фотографий
+var randomLengthPhotos = function (PHOTOS) {
+  var photosForObjects = [];
+  for (var k = 0; k < randomItemMinMax(MIN_PHOTOS, MAX_PHOTOS); k++) {
+    photosForObjects.push(randomItem(PHOTOS));
+  }
+  return photosForObjects
+}
+
 //ф-я создания моков, объекты поинтов на карте
-var creationMoks = function () {
+var createMoks = function () {
   var moksCollection = [];
-  for (var i = 0; i < 8; i++) {
+  for (var i = 0; i < moksCount; i++) {
     var objectItem = {};
     //заполняем массив рандомной длинны фотографиями
-    var randomLengthPhotos = function (PHOTOS_ARR) {
-      var photosForObjects = [];
-      for (var k = 0; k < randomItemMinMax(MIN_PHOTOS, MAX_PHOTOS); k++) {
-        photosForObjects.push(randomItem(PHOTOS_ARR));
-      }
-      return photosForObjects
-    }
+    randomLengthPhotos(PHOTOS)
     //об авторе
     objectItem.autor = {
       avatar: 'img/avatars/user0' + (i + 1) + '.png'
     }
     //предложение
     objectItem.offer = {
-      title: TITLE_CONST,
-      address: ADRESS_CONST,
-      price: randomItem(PRICE_ARR),
-      type: randomItem(TYPE_ARR),
-      rooms: randomItem(ROOMS_ARR),
-      guests: randomItem(GUESTS_ARR),
-      checkin: randomItem(CHECKIN_ARR),
-      checkout: randomItem(CHECKOUT_ARR),
-      features: randomItem(FEATURES_ARR),
-      description: DESCRIPTIO_CONST,
-      photos: randomLengthPhotos(PHOTOS_ARR)
+      title: TITLE,
+      address: ADRESS,
+      price: randomItem(PRICE),
+      type: randomItem(TYPE),
+      rooms: randomItem(ROOMS),
+      guests: randomItem(GUESTS),
+      checkin: randomItem(CHECKINS),
+      checkout: randomItem(CHECKOUTS),
+      features: randomItem(FEATURES),
+      description: DESCRIPTIO,
+      photos: randomLengthPhotos(PHOTOS)
     }
     //местоположение
-    //находим ширину документа и блока с меткой
-    let minX = 0;
-    let maxX = document.querySelector('.map__overlay').offsetWidth;
     objectItem.location = {
-      x: randomItemMinMax(minX, maxX),
+      x: randomItemMinMax(MIN_X, MAX_X),
       y: randomItemMinMax(HEIGTH_BLOCK_Y.min, HEIGTH_BLOCK_Y.max)
     }
     //добавляем объекты в массив
@@ -97,16 +102,17 @@ var creationMoks = function () {
 
   return moksCollection;
 }
-creationMoks();
-console.log(creationMoks())
+var moks = createMoks();
+console.log(moks);
+
 //контент шаблона
 var pinTamplate = document.querySelector('#pin').content;
 
 //ф-я создания елемента в разметки
-var creatElementsPins = function (tamplate, arrayObj, elementForPush) {
+var createElementsPins = function (tamplate, arrayObj, elementForPush) {
   for (var j = 0; j < arrayObj.length; j++) {
-    let pointInTheMap = tamplate.cloneNode(true);
-    let mapButtonPin = pointInTheMap.querySelector('.map__pin');
+    var pointInTheMap = tamplate.cloneNode(true);
+    var mapButtonPin = pointInTheMap.querySelector('.map__pin');
     mapButtonPin.style.left = arrayObj[j].location.x - MAP_PIN_WIDTH * 0.5 + 'px';
     mapButtonPin.style.top = arrayObj[j].location.y - MAP_PIN_HEIGTH + 'px';
     mapButtonPin.alt = arrayObj[j].offer.title;
@@ -114,23 +120,23 @@ var creatElementsPins = function (tamplate, arrayObj, elementForPush) {
     elementForPush.appendChild(pointInTheMap);
   }
 }
-creatElementsPins(pinTamplate, creationMoks(), PIN_AREA)
+createElementsPins(pinTamplate, moks, MAP_PINS_ELEMENT);
 
 //отрисовка карточек объявлений
 //находим шаблом карточки, и ее контент
 var cardTamlateContent = document.querySelector('#card').content;
 //находим элемент перед которым нужно вставлять новые элементы
-var insertCardsBeforMe = document.querySelector('.map__filters-container');
+var mapFiltersContainer = document.querySelector('.map__filters-container');
 
 //ф-я создания и отрисовки нового элемента
 var creatCard = function (template, arrayObjects, elementForPush) {
-  let cardItem = template.cloneNode(true);
+  var cardItem = template.cloneNode(true);
   //заголовок
   cardItem.querySelector('.popup__title').textContent = arrayObjects[0].offer.title;
   //цена жилья
   cardItem.querySelector('.popup__text--price').textContent = arrayObjects[0].offer.price + ' р/ночь';
   //типы жилья
-  cardItem.querySelector('.popup__type').textContent = TYPE_ARR_RUS[arrayObjects[0].offer.type];
+  cardItem.querySelector('.popup__type').textContent = TYPE_RUS[arrayObjects[0].offer.type];
   //комнаты и гости
   cardItem.querySelector('.popup__text--capacity').textContent = arrayObjects[0].offer.rooms + ' комнаты для ' + arrayObjects[0].offer.guests + ' гостей';
   //заезд, выезд
@@ -142,10 +148,11 @@ var creatCard = function (template, arrayObjects, elementForPush) {
   //фото
   var addNewPhotos = function () {
     cardItem.querySelector('.popup__photo').src = arrayObjects[0].offer.photos[randomItemMinMax(0, arrayObjects[0].offer.photos.length - 1)];
+    var popupPhotosElem = cardItem.querySelector('.popup__photos');
     for (var i = 0; i < arrayObjects[0].offer.photos.length; i++) {
       var newPhotoElement = cardItem.querySelector('.popup__photo').cloneNode(true);
       newPhotoElement.src = arrayObjects[0].offer.photos[i];
-      cardItem.querySelector('.popup__photos').appendChild(newPhotoElement);
+      popupPhotosElem.appendChild(newPhotoElement);
     }
   }
   addNewPhotos();
@@ -155,7 +162,7 @@ var creatCard = function (template, arrayObjects, elementForPush) {
   elementForPush.before(cardItem)
 }
 
-creatCard(cardTamlateContent, creationMoks(), insertCardsBeforMe)
+creatCard(cardTamlateContent, moks, mapFiltersContainer)
 
 
 
