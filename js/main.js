@@ -198,7 +198,7 @@ var ADDRESS_INPUT = document.querySelector('#address');
 var MAP_PIN_MAIN_WIDTH = MAP_PIN_MAIN_ELEM.offsetWidth;
 var MAP_PIN_MAIN_HEIGTH = MAP_PIN_MAIN_ELEM.offsetHeight;
 var MAP_LEYER = document.querySelector('.map__overlay');
-var INDENT_PIN_MAIN = 15;
+var INDENT_PIN_MAIN = 15; //отступ по Y для конца метки
 
 /// переменные координат x и y для адреса
 var positionXAddress;
@@ -218,5 +218,5 @@ valueOfAddressInput();
 MAP_PIN_MAIN_ELEM.addEventListener('mousedown', function () {
   positionXAddress = Math.floor(MAP_PIN_MAIN_ELEM.offsetLeft + MAP_PIN_MAIN_WIDTH * 0.5);
   positionYAddress = Math.floor(MAP_PIN_MAIN_ELEM.offsetTop + MAP_PIN_MAIN_HEIGTH + INDENT_PIN_MAIN);
-  ADDRESS_INPUT.value = (positionXAddress + ', ' + positionYAddress)
+  ADDRESS_INPUT.value = positionXAddress + ', ' + positionYAddress;
 })
