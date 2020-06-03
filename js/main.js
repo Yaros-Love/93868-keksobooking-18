@@ -129,7 +129,7 @@ var cardTamlateContent = document.querySelector('#card').content;
 var mapFiltersContainer = document.querySelector('.map__filters-container');
 
 //ф-я создания и отрисовки нового элемента
-var creatCard = function (template, arrayObjects, elementForPush) {
+var createCard = function (template, arrayObjects, elementForPush) {
   var cardItem = template.cloneNode(true);
   //заголовок
   cardItem.querySelector('.popup__title').textContent = arrayObjects[0].offer.title;
@@ -162,7 +162,7 @@ var creatCard = function (template, arrayObjects, elementForPush) {
   elementForPush.before(cardItem)
 }
 
-creatCard(cardTamlateContent, moks, mapFiltersContainer)
+createCard(cardTamlateContent, moks, mapFiltersContainer)
 
 
 
@@ -227,3 +227,33 @@ MAP_PIN_MAIN_ELEM.addEventListener('mousedown', function () {
   positionYAddress = Math.floor(MAP_PIN_MAIN_ELEM.offsetTop + MAP_PIN_MAIN_HEIGTH + INDENT_PIN_MAIN);
   ADDRESS_INPUT.value = positionXAddress + ', ' + positionYAddress;
 })
+
+// валидация полей с комнатами и количеством гостей
+var roomNumberSelect = document.querySelector('#room_number');
+var capacitySelect = document.querySelector('#capacity');
+
+var checkValidRooms = function () {
+  if (roomNumberSelect.value === '100' && capacitySelect.value !== '0') {
+    roomNumberSelect.setCustomValidity('Количетво комнат явно не для гостей')
+    return (roomNumberSelect.reportValidity())
+  }
+
+  if (capacitySelect.value === '0' && roomNumberSelect.value !== '100') {
+    capacitySelect.setCustomValidity('Выберите количество гостей')
+    return(capacitySelect.reportValidity())
+  }
+
+  if (roomNumberSelect.value < capacitySelect.value) {
+    roomNumberSelect.setCustomValidity('Количество комнат не должно быть меньше количества госте!')
+    return (roomNumberSelect.reportValidity())
+  }
+
+  else {
+    roomNumberSelect.setCustomValidity("")
+    return
+  }
+}
+
+// слушатели на изм значений в полях "гостей" и "комнат"
+roomNumberSelect.addEventListener('change', checkValidRooms);
+capacitySelect.addEventListener('change', checkValidRooms);
