@@ -319,3 +319,14 @@ if (typeSelectElement.value === 'palace') {
   priceInputElement.setAttribute('placeholder', '10 000')
 }
 })
+
+//валидация времени заезда и выезда
+var timeinSelectElement = document.querySelector('#timein');
+var timeoutSelectElement = document.querySelector('#timeout');
+//
+timeinSelectElement.addEventListener('change', function(){
+  timeoutSelectElement.value = timeinSelectElement.value;
+})
+timeoutSelectElement.addEventListener('change', function(){
+  timeinSelectElement.value = timeoutSelectElement.value
+})
