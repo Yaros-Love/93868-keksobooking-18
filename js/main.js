@@ -160,7 +160,7 @@ var createCard = function (arrayObjects, currentValue) {
   //аватарка
   cardItem.querySelector('.popup__avatar').src = arrayObjects[currentValue].autor.avatar;
   //добавляем в разметку перед след элементом:
-  mapFiltersContainer.before(cardItem)
+  mapFiltersContainer.before(cardItem);
 
 }
 
@@ -238,8 +238,8 @@ var checkValidRooms = function () {
     roomNumberSelect.setCustomValidity('Количетво комнат явно не для гостей')
     return (roomNumberSelect.reportValidity())
   }
-
-  if (capacitySelect.value === '0' && roomNumberSelect.value !== '100') {
+  // debugger
+  if (roomNumberSelect.value !== '100' && capacitySelect.value === '0') {
     capacitySelect.setCustomValidity('Выберите количество гостей')
     return (capacitySelect.reportValidity())
   }
@@ -250,27 +250,29 @@ var checkValidRooms = function () {
   }
 
   else {
-    roomNumberSelect.setCustomValidity("")
+    roomNumberSelect.setCustomValidity("");
+    capacitySelect.setCustomValidity("");
     return
   }
 }
 
 // слушатели на изм значений в полях "гостей" и "комнат"
-roomNumberSelect.addEventListener('change', checkValidRooms);
-capacitySelect.addEventListener('change', checkValidRooms);
+roomNumberSelect.addEventListener('input', checkValidRooms);
+capacitySelect.addEventListener('input', checkValidRooms);
 
 
 // ф-я удаления выбранной карточки с объявлением
-var deletePinPopun = function(){
+var deletePinPopup = function () {
   MAP_ELEM.querySelector('article.popup').remove();
+  document.removeEventListener('keydown', onEscapeButClose);
 }
 
 //отрисовка карточки по клику, удаление popup если выбирается новый
 var mapPins = MAP_PINS_ELEMENT.querySelectorAll('button[type=button].map__pin');
 for (var mapPin of mapPins) {
   mapPin.addEventListener('click', function (e) {
-    if (MAP_ELEM.contains(document.querySelector('article.popup'))){
-      deletePinPopun();
+    if (MAP_ELEM.contains(document.querySelector('article.popup'))) {
+      deletePinPopup();
     }
     var currentValuePin = e.currentTarget.value;
     createCard(moks, currentValuePin);
@@ -279,54 +281,59 @@ for (var mapPin of mapPins) {
     //вешаем слушателя на enter по кнопке .popup__close
     var popupClose = MAP_ELEM.querySelector('.popup__close');
     popupClose.addEventListener('keydown', onEnterButClose);
-    popupClose.addEventListener('click', deletePinPopun);
+    popupClose.addEventListener('click', deletePinPopup);
   })
 }
 
 //удаление карточки по enter на .popup__close
 var ENTER = 13;
 var onEnterButClose = function (evt) {
-  if (evt.keyCode === 13){
-    deletePinPopun();
+  if (evt.keyCode === 13) {
+    deletePinPopup();
   }
 }
 //удаление карточки по esc
 var ESCAPE = 27;
 var onEscapeButClose = function (evt) {
-  if (evt.keyCode === 27){
-    deletePinPopun();
+  if (evt.keyCode === 27) {
+    deletePinPopup();
   }
 }
 
 //валидация вида жилья и стоимости
 var typeSelectElement = document.querySelector('#type');
 var priceInputElement = document.querySelector('#price');
-typeSelectElement.addEventListener('change', function(){
-if (typeSelectElement.value === 'bungalo') {
-  priceInputElement.setAttribute('min', '0');
-  priceInputElement.setAttribute('placeholder', '0')
-}
-if (typeSelectElement.value === 'flat') {
-  priceInputElement.setAttribute('min', '1000');
-  priceInputElement.setAttribute('placeholder', '1 000')
-}
-if (typeSelectElement.value === 'house') {
-  priceInputElement.setAttribute('min', '5000');
-  priceInputElement.setAttribute('placeholder', '5 000')
-}
-if (typeSelectElement.value === 'palace') {
-  priceInputElement.setAttribute('min', '10000');
-  priceInputElement.setAttribute('placeholder', '10 000')
-}
+typeSelectElement.addEventListener('change', function () {
+  if (typeSelectElement.value === 'bungalo') {
+    priceInputElement.setAttribute('min', '0');
+    priceInputElement.setAttribute('placeholder', '0')
+  }
+  if (typeSelectElement.value === 'flat') {
+    priceInputElement.setAttribute('min', '1000');
+    priceInputElement.setAttribute('placeholder', '1 000')
+  }
+  if (typeSelectElement.value === 'house') {
+    priceInputElement.setAttribute('min', '5000');
+    priceInputElement.setAttribute('placeholder', '5 000')
+  }
+  if (typeSelectElement.value === 'palace') {
+    priceInputElement.setAttribute('min', '10000');
+    priceInputElement.setAttribute('placeholder', '10 000')
+  }
 })
 
 //валидация времени заезда и выезда
 var timeinSelectElement = document.querySelector('#timein');
 var timeoutSelectElement = document.querySelector('#timeout');
-//
-timeinSelectElement.addEventListener('change', function(){
+
+timeinSelectElement.addEventListener('change', function () {
   timeoutSelectElement.value = timeinSelectElement.value;
 })
-timeoutSelectElement.addEventListener('change', function(){
+timeoutSelectElement.addEventListener('change', function () {
   timeinSelectElement.value = timeoutSelectElement.value
+})
+
+var formAdd = document.querySelector('.ad-form');
+formAdd.addEventListener('submit', function (evt) {
+  evt.preventDefault()
 })
