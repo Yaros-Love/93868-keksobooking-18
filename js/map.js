@@ -24,10 +24,13 @@
   var mapFiltersSelects = mapFiltersElem.querySelectorAll('select'); //select в форме фильтров
   var mapFiltersFieldset = mapFiltersElem.querySelector('fieldset'); //fielset в форме фильтров
   var PIN_ARROW_HEIGHT = window.const.PIN_ARROW_HEIGHT;
-
+  var load = window.backend.load;//ф-я отправки запроса get
+  var onLoadSucsess = window.backend.onLoadSucsess;//при успешном ответе
+  var onErrorLoad = window.backend.onErrorLoad;//при ошибках
 
   ///ф-я, в активное состояние страницы
-  var showMapByPress = function () {
+  var onPinClickShowMap = function () {
+    load(onLoadSucsess, onErrorLoad)
     mapElement.classList.remove('map--faded');
     addFormElement.classList.remove('ad-form--disabled');
     mapFiltersElem.classList.remove('ad-form--disabled');
@@ -43,23 +46,19 @@
       buttons.removeAttribute('disabled');
     }
     // удаляем обработчик события
-    mapPinMainElem.removeEventListener('mousedown', showMapByPress)
+    mapPinMainElem.removeEventListener('mousedown', onPinClickShowMap)
   }
 
   //слушатель по нажатию мыши на метку
-  mapPinMainElem.addEventListener('mousedown', showMapByPress)
+  mapPinMainElem.addEventListener('mousedown', onPinClickShowMap)
 
   // слушатель по нажатию enter
   mapPinMainElem.addEventListener('keydown', function (evt) {
     if (evt.keyCode === ENTER_KEYCODE) {
-      showMapByPress()
+      onPinClickShowMap()
     }
   })
 
-  //контент шаблона для пина на карте
-  var pinTempContent = pinTemplate.content;
-  //отрисовывка пинов на карте
-  window.pin.createPins(pinTempContent, window.data.moks, mapPinsElement);
 
   // ф-я удаления выбранной карточки с объявлением
   var deletePinPopup = function () {
@@ -69,22 +68,24 @@
 
   // отрисовка карточки по клику, удаление popup если выбирается новый
   // находим все пины и слушает 'клик'
-  var pins = mapPinsElement.querySelectorAll('button[type=button].map__pin');
-  for (var pin of pins) {
-    pin.addEventListener('click', function (e) {
-      //проверяем есть ли открытое объявление на карте
-      if (mapElement.contains(document.querySelector('article.popup'))) {
-        deletePinPopup();
-      };
-      var currentPin = window.data.moks[e.currentTarget.value]; //нажатый пин - объект
-      window.pin.createCard(currentPin);
-      //вешаем слушателя на esc
-      document.addEventListener('keydown', onEscapeButClose);
-      //вешаем слушателя на enter по кнопке .popup__close
-      var popupClose = mapElement.querySelector('.popup__close');
-      popupClose.addEventListener('keydown', onEnterButClose);
-      popupClose.addEventListener('click', deletePinPopup);
-    })
+  var onPinClickShowPopup = function (data) {
+    var pins = mapPinsElement.querySelectorAll('button[type=button].map__pin');
+    for (var pin of pins) {
+      pin.addEventListener('click', function (evt) {
+        //проверяем есть ли открытое объявление на карте
+        if (mapElement.contains(document.querySelector('article.popup'))) {
+          deletePinPopup();
+        };
+        var currentPin = data[evt.currentTarget.value]; //нажатый пин - объект
+        window.pin.createCard(currentPin);
+        //вешаем слушателя на esc
+        document.addEventListener('keydown', onEscapeButClose);
+        //вешаем слушателя на enter по кнопке .popup__close
+        var popupClose = mapElement.querySelector('.popup__close');
+        popupClose.addEventListener('keydown', onEnterButClose);
+        popupClose.addEventListener('click', deletePinPopup);
+      })
+    }
   }
 
   //удаление карточки по enter на .popup__close
@@ -101,11 +102,10 @@
     }
   }
 
-
-  //tgggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg
+  //перетаскивание главной метки по карте
   var dragged; //флаг перетаскивания
   var coordsLimit = mapOverlayElem.getBoundingClientRect();
-  console.log(coordsLimit.x)
+
   //ограничения за которые нельзя перетащить главный пин
   var limits = {
     top: MAP_OVERLAY_HEIGTH.min - mapPinMainHeight * 0.5 - PIN_ARROW_HEIGHT,
@@ -113,10 +113,11 @@
     bottom: MAP_OVERLAY_HEIGTH.max - mapPinMainHeight * 0.5 - PIN_ARROW_HEIGHT,
     left: MAP_OVERLAY_WIDTH.min
   };
-  console.log(limits.top, mapPinMainHeight)
+
   mapPinMainElem.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
     dragged = true;
+
     var onMouseMove = function (moveEvt) {
       moveEvt.preventDefault();
       if (dragged) {
@@ -124,7 +125,6 @@
           x: limits.left,
           y: limits.top
         };
-console.log(moveEvt.clientX, pageXOffset)
         if (moveEvt.clientX > limits.rigth + coordsLimit.x) {
           newLocaton.x = limits.rigth;
         }
@@ -152,6 +152,10 @@ console.log(moveEvt.clientX, pageXOffset)
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
   })
+
+  window.map = {
+    onPinClickShowPopup: onPinClickShowPopup,
+  }
 })()
 
 

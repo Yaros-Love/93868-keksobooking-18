@@ -5,6 +5,13 @@
   var ESCAPE_KEYCODE = 27;
   var MOKS_COUNT = 8; //количество пинов на карте
   var PIN_ARROW_HEIGHT = 22; //высота стрелки пина
+  var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
+  var TYPE_LIVING_RUS = {
+    'palace': 'Дворец',
+    'flat': 'Квартира',
+    'house': 'Дом',
+    'bungalo': 'Бунгало'
+  };
 
   var mapElement = document.querySelector('.map');//Карта объявлений
   var mapPinMainElem = document.querySelector('.map__pin--main');//главноая метка на карте
@@ -36,6 +43,8 @@
     ESCAPE_KEYCODE: ESCAPE_KEYCODE,
     MOKS_COUNT: MOKS_COUNT,
     PIN_ARROW_HEIGHT : PIN_ARROW_HEIGHT,
+    FEATURES : FEATURES,
+    TYPE_LIVING_RUS : TYPE_LIVING_RUS,
     mapElement : mapElement,
     mapPinMainElem : mapPinMainElem,
     mapPinMainWidth : mapPinMainWidth,
