@@ -14,9 +14,17 @@ var randomItem = function (array) {
   return Math.floor(randItem);
 };
 
+//ф-я удаления детей
+var deleteChilds = function (parent) {
+  while (parent.firstChild) {
+    parent.removeChild(parent.firstChild);
+  }
+};
+
 //объект на экспорт
 window.util = {
   randomItem : randomItem,
   randomItemMinMax : randomItemMinMax,
+  deleteChilds : deleteChilds,
 }
 })()

@@ -8,6 +8,7 @@
   var pinTemplate = document.querySelector('#pin'); //шаблон пина на карте
   var MAP_PIN_WIDTH = window.const.MAP_PIN_WIDTH; //ширина пина (.map__pin) в разметке
   var MAP_PIN_HEIGTH = window.const.MAP_PIN_HEIGTH; //высота пина (.map__pin) в разметке
+  var deleteChilds = window.util.deleteChilds;
   //массив с FEATURES
   var FEATURES = window.const.FEATURES;
   //объект с видом жилья
@@ -47,14 +48,13 @@
     card.querySelector('.popup__text--time').textContent = 'Заезд после ' + data.offer.checkin + ', выезд до ' + data.offer.checkout;
 
     //удобства, удаляем li, создаем новые в нужном количестве
-    var popupFeaturesLi = card.querySelector('.popup__features');
-    while (popupFeaturesLi.firstChild) {
-      popupFeaturesLi.removeChild(popupFeaturesLi.firstChild);
-    };
+    var popupFeatures = card.querySelector('.popup__features');
+    deleteChilds(popupFeatures);
+
     for (var i = 0; i < data.offer.features.length; i++) {
       var createLi = document.createElement('li');
       createLi.classList.add('popup__feature', 'popup__feature--' + data.offer.features[i]);
-      popupFeaturesLi.appendChild(createLi)
+      popupFeatures.appendChild(createLi)
     };
 
     //описание
@@ -62,7 +62,8 @@
 
     //добавляем галерею фотографий
     var popupPhotosElem = card.querySelector('.popup__photos');
-    popupPhotosElem.querySelector('.popup__photo').remove();
+    deleteChilds(popupPhotosElem);
+
     for (var i = 0; i < data.offer.photos.length; i++) {
       var createImg = document.createElement('img');
       createImg.classList.add('popup__photo');
