@@ -2,13 +2,13 @@
 //модуль, который управляет карточками объявлений и пинами: добавляет на страницу нужную карточку, отрисовывает пины и осуществляет взаимодействие карточки и метки на карте
 
 (function () {
+  var load = window.backend.load; //get запрос
+  var formSubmitButt = document.querySelector('.ad-form__submit');
   var mapElement = window.const.mapElement;
-  var mapPinsElement = document.querySelector('.map__pins');//элемент с метками объявлений
   var mapPinMainElem = window.const.mapPinMainElem//главная метка на карте
   var mapPinMainWidth = window.const.mapPinMainWidth;
   var mapPinMainHeight = window.const.mapPinMainHeight;
   var mapFiltersElem = document.querySelector('.map__filters');//форма с фильтрами для объявлений
-  var pinTemplate = document.querySelector('#pin'); //шаблон пина на карте
   var mapOverlayElem = window.const.mapOverlayElem;
   var ENTER_KEYCODE = window.const.ENTER_KEYCODE;
   var ESCAPE_KEYCODE = window.const.ESCAPE_KEYCODE;
@@ -16,7 +16,6 @@
   var MAP_OVERLAY_WIDTH = window.const.MAP_OVERLAY_WIDTH;
   //допустимый диапазон по Y для пинов на элемете .map__overlay
   var MAP_OVERLAY_HEIGTH = window.const.MAP_OVERLAY_HEIGTH
-  var MAP_PIN_HEIGTH = window.const.MAP_PIN_HEIGTH;
   var addFormElement = window.const.addFormElement;
   var addFormTextarea = addFormElement.querySelector('textarea');
   var addFormFieldsets = addFormElement.querySelectorAll('fieldset');//Fieldsets в форме, кот нужно сделать активными
@@ -24,16 +23,23 @@
   var mapFiltersSelects = mapFiltersElem.querySelectorAll('select'); //select в форме фильтров
   var mapFiltersFieldset = mapFiltersElem.querySelector('fieldset'); //fielset в форме фильтров
   var PIN_ARROW_HEIGHT = window.const.PIN_ARROW_HEIGHT;
-  var load = window.backend.load;//ф-я отправки запроса get
   var onLoadSucsess = window.backend.onLoadSucsess;//при успешном ответе
   var onErrorLoad = window.backend.onErrorLoad;//при ошибках
+  var onKeyClick = window.util.onKeyClick; //действия по нажатию клавиши
+  var onEscapeButClose = window.util.onEscapeButClose;
 
-  ///ф-я, в активное состояние страницы
-  var onPinClickShowMap = function () {
-    load(onLoadSucsess, onErrorLoad)
-    mapElement.classList.remove('map--faded');
-    addFormElement.classList.remove('ad-form--disabled');
-    mapFiltersElem.classList.remove('ad-form--disabled');
+  var onErrorLoad = function (message) {
+    showErrorPopup(message);
+    hideMap();
+    mapPinMainElem.addEventListener('mousedown', onMainPinClick)
+  };
+
+  //переключение карты и форм в активное состояние
+  var showMap = function () {
+    mapElement.classList.toggle('map--faded', false);
+    addFormElement.classList.toggle('ad-form--disabled', false);
+    mapFiltersElem.classList.toggle('ad-form--disabled', false);
+
     mapFiltersFieldset.removeAttribute('disabled');
     addFormTextarea.removeAttribute('disabled');
     for (var selects of mapFiltersSelects) {
@@ -45,62 +51,103 @@
     for (var buttons of addFormButtons) {
       buttons.removeAttribute('disabled');
     }
-    // удаляем обработчик события
-    mapPinMainElem.removeEventListener('mousedown', onPinClickShowMap)
+  };
+
+  //переключение карты и форм в ytактивное состояние
+  var hideMap = function () {
+    for (var selects of mapFiltersSelects) {
+      selects.setAttribute('disabled', true)
+    };
+    for (var fieldsets of addFormFieldsets) {
+      fieldsets.setAttribute('disabled', true);
+    };
+    for (var buttons of addFormButtons) {
+      buttons.setAttribute('disabled', true);
+    }
+    mapFiltersFieldset.setAttribute('disabled', true);
+    addFormTextarea.setAttribute('disabled', true);
+    mapElement.classList.toggle('map--faded', true);
+    addFormElement.classList.toggle('ad-form--disabled', true);
+    mapFiltersElem.classList.toggle('ad-form--disabled', true);
+  };
+
+//отрисовка и поведение сообщения об удачной загрузки
+var showSuccessPopup = function () {
+  var template = document.querySelector('#success').content;
+  var successElem = template.cloneNode(true);
+  successElem.querySelector('.success__message').textContent = 'Форма успешно отправленна!';
+  document.querySelector('main').appendChild(successElem);
+
+  var successElem = document.querySelector('.success');
+  document.addEventListener('keydown', function (evt) {
+    onEscapeButClose(evt, function () {
+      deletePopup(successElem)
+    })
+  })
+  document.addEventListener('click', function () {
+    deletePopup(successElem)
+  });
+};
+
+//отрисовка и поведение сообщения с ошибкой
+var showErrorPopup = function (message) {
+  console.log(message)
+  var template = document.querySelector('#error').content;
+  var errorElem = template.cloneNode(true);
+
+  errorElem.querySelector('.error__message').textContent = message;
+  document.querySelector('main').appendChild(errorElem);
+  var errorPopup = document.querySelector('.error');
+  var errorButton = document.querySelector('.error__button');
+  document.addEventListener('keydown', function (evt) {
+    onEscapeButClose(evt, function () {
+      deletePopup(errorPopup)
+    })
+  });
+
+  errorButton.addEventListener('click', function () {
+    deletePopup(errorPopup);
+    formSubmitButt.removeAttribute('disabled');
+  });
+  errorButton.addEventListener('keydown', function () {
+    onEnterButClose(evt, function () {
+      deletePopup(errorPopup);
+      formSubmitButt.removeAttribute('disabled');
+    });
+  });
+}
+
+//события по клику на главный пин, ф-я обработчик!
+  var onMainPinClick = function () {
+    showMap();
+    load(onLoadSucsess, onErrorLoad)
+    mapPinMainElem.removeEventListener('mousedown', onMainPinClick)
   }
 
   //слушатель по нажатию мыши на метку
-  mapPinMainElem.addEventListener('mousedown', onPinClickShowMap)
+  mapPinMainElem.addEventListener('mousedown', onMainPinClick)
 
   // слушатель по нажатию enter
   mapPinMainElem.addEventListener('keydown', function (evt) {
-    if (evt.keyCode === ENTER_KEYCODE) {
-      onPinClickShowMap()
-    }
+    onKeyClick(evt, onMainPinClick, ENTER_KEYCODE);
   })
 
-
-  // ф-я удаления выбранной карточки с объявлением
-  var deletePinPopup = function () {
-    mapElement.querySelector('article.popup').remove();
-    document.removeEventListener('keydown', onEscapeButClose);
-  }
-
-  // отрисовка карточки по клику, удаление popup если выбирается новый
-  // находим все пины и слушает 'клик'
-  var onPinClickShowPopup = function (data) {
-    var pins = mapPinsElement.querySelectorAll('button[type=button].map__pin');
-    for (var pin of pins) {
-      pin.addEventListener('click', function (evt) {
-        //проверяем есть ли открытое объявление на карте
-        if (mapElement.contains(document.querySelector('article.popup'))) {
-          deletePinPopup();
-        };
-        var currentPin = data[evt.currentTarget.value]; //нажатый пин - объект
-        window.pin.createCard(currentPin);
-        //вешаем слушателя на esc
-        document.addEventListener('keydown', onEscapeButClose);
-        //вешаем слушателя на enter по кнопке .popup__close
-        var popupClose = mapElement.querySelector('.popup__close');
-        popupClose.addEventListener('keydown', onEnterButClose);
-        popupClose.addEventListener('click', deletePinPopup);
-      })
+  //удаление/закрытие попапа с ошибкой и удаление слушателя с документа
+  var deletePopup = function (element) {
+    if (document.contains(element)) {
+      element.remove();
+      document.removeEventListener('keydown', onEscapeButClose)
     }
-  }
+  };
 
-  //удаление карточки по enter на .popup__close
-  var onEnterButClose = function (evt) {
+  //удаление popup по enter
+  var onEnterButClose = function (evt, foo) {
     if (evt.keyCode === ENTER_KEYCODE) {
-      deletePinPopup();
+      foo();
     }
   }
 
-  //удаление карточки по esc
-  var onEscapeButClose = function (evt) {
-    if (evt.keyCode === ESCAPE_KEYCODE) {
-      deletePinPopup();
-    }
-  }
+
 
   //перетаскивание главной метки по карте
   var dragged; //флаг перетаскивания
@@ -151,10 +198,19 @@
 
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
-  })
+  });
+
 
   window.map = {
-    onPinClickShowPopup: onPinClickShowPopup,
+    // onPinClickShowPopup : onPinClickShowPopup,
+    onEnterButClose: onEnterButClose,
+    onEscapeButClose: onEscapeButClose,
+    deletePopup: deletePopup,
+    showErrorPopup: showErrorPopup,
+    showSuccessPopup: showSuccessPopup,
+    hideMap: hideMap,
+    showMap: showMap,
+    onMainPinClick : onMainPinClick
   }
 })()
 

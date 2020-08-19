@@ -3,7 +3,6 @@
 (function () {
   var ENTER_KEYCODE = 13;
   var ESCAPE_KEYCODE = 27;
-  var MOKS_COUNT = 8; //количество пинов на карте
   var PIN_ARROW_HEIGHT = 22; //высота стрелки пина
   var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
   var TYPE_LIVING_RUS = {
@@ -12,9 +11,11 @@
     'house': 'Дом',
     'bungalo': 'Бунгало'
   };
+  var START_LEFT = 570; //начальное положение главного пина на карте
+  var START_TOP  = 375; //начальное положение главного пина на карте
 
   var mapElement = document.querySelector('.map');//Карта объявлений
-  var mapPinMainElem = document.querySelector('.map__pin--main');//главноая метка на карте
+  var mapPinMainElem = document.querySelector('.map__pin--main');//главная метка на карте
   var mapPinMainWidth = mapPinMainElem.offsetWidth;
   var mapPinMainHeight = mapPinMainElem.offsetHeight;
   var mapOverlayElem = document.querySelector('.map__overlay');
@@ -41,7 +42,8 @@
   window.const = {
     ENTER_KEYCODE: ENTER_KEYCODE,
     ESCAPE_KEYCODE: ESCAPE_KEYCODE,
-    MOKS_COUNT: MOKS_COUNT,
+    START_LEFT : START_LEFT,
+    START_TOP : START_TOP,
     PIN_ARROW_HEIGHT : PIN_ARROW_HEIGHT,
     FEATURES : FEATURES,
     TYPE_LIVING_RUS : TYPE_LIVING_RUS,
@@ -55,6 +57,5 @@
     MAP_OVERLAY_HEIGTH: MAP_OVERLAY_HEIGTH,
     MAP_PIN_HEIGTH : MAP_PIN_HEIGTH,
     MAP_PIN_WIDTH : MAP_PIN_WIDTH,
-
   }
 })()

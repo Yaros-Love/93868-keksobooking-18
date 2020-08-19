@@ -2,29 +2,57 @@
 // модуль с валидацией форм
 
 (function () {
+  var save = window.backend.save;
+  var deletePins = window.pin.deletePins; //удаление пинов
+  var deletePopup = window.map.deletePopup;//удаление карточки объявления
   var mapPinMainElem = window.const.mapPinMainElem//главная метка на карте
+  var showErrorPopup = window.map.showErrorPopup;//ф-я отрисовки ошибки и ее поведения
+  var showSuccessPopup = window.map.showSuccessPopup;//отрисовка и поведение сообщения об удачной закгрузки
+  var onMainPinClick = window.map.onMainPinClick; //слушатель по клику на главном пине
   var mapPinMainWidth = window.const.mapPinMainWidth;
   var mapPinMainHeight = window.const.mapPinMainHeight;
   var mapElement = window.const.mapElement;
   var addFormElement = window.const.addFormElement;
   var PIN_ARROW_HEIGHT = window.const.PIN_ARROW_HEIGHT;
-  // устанавливаем значение поля адреса, центр метки до активации
-  // устанавливаем значение поля адреса для активного состояния, конец указателя метки
+  var filterPins = window.filter.filterPins;
+  var setDefaultPositionPin = window.pin.setDefaultPositionPin;
+  var onPinClickShowPopup = window.pin.onPinClickShowPopup;
+  var hideMap = window.map.hideMap;
+  var formSubmitButt = document.querySelector('.ad-form__submit');
   var inputAddress = document.querySelector('#address');
+  var hostingType = document.querySelector('#housing-type');
+
+
+  var onUnLoadSucsess = function (message) {
+    console.log(message)
+    showSuccessPopup();
+      addFormElement.reset(); //сбрасываем значения
+      setDefaultPositionPin();//устанавливаем пин в нач положение
+      deletePopup(document.querySelector('article.popup'));//удалем карточку объявления
+      deletePins();//удаляем пины
+      mapPinMainElem.addEventListener('mousedown', onMainPinClick)//слушатель загрузки на пин
+      hideMap();
+  };
+
+  var onErrorUnLoad = function (message) {
+    showErrorPopup(message);
+  formSubmitButt.setAttribute('disabled', true)
+
+  };
 
   /// переменные координат x и y для адреса
   var positionXAddress;
   var positionYAddress;
 
   ///координаты метки в неактивном состоянии
-  var valueOfAddressInput = function () {
+  var valueAddressDisabled = function () {
+    positionXAddress = Math.floor(mapPinMainElem.offsetLeft + mapPinMainWidth * 0.5);
+    positionYAddress = Math.floor(mapPinMainElem.offsetTop + mapPinMainHeight * 0.5);
+    inputAddress.value = positionXAddress + ', ' + positionYAddress;
     if (mapElement.classList.contains('map--faded') === true) {
-      positionXAddress = Math.floor(mapPinMainElem.offsetLeft + mapPinMainWidth * 0.5);
-      positionYAddress = Math.floor(mapPinMainElem.offsetTop + mapPinMainHeight * 0.5);
-      inputAddress.value = positionXAddress + ', ' + positionYAddress;
+      valueAddressDisabled();
     }
   }
-  valueOfAddressInput();
 
   /// координаты в активном при нажатии мышью на маркер
   mapPinMainElem.addEventListener('mousemove', function () {
@@ -32,7 +60,7 @@
     positionYAddress = Math.floor(mapPinMainElem.offsetTop + mapPinMainHeight + PIN_ARROW_HEIGHT);
     inputAddress.value = positionXAddress + ', ' + positionYAddress;
   })
-  
+
   // валидация полей с комнатами и количеством гостей
   var roomNumberSelect = document.querySelector('#room_number');
   var capacitySelect = document.querySelector('#capacity');
@@ -99,6 +127,16 @@
   })
 
   addFormElement.addEventListener('submit', function (evt) {
-    evt.preventDefault()
-  })
+    save(new FormData(addFormElement), onUnLoadSucsess, showErrorPopup);
+    evt.preventDefault();
+  });
+
+  // load(onLoadSucsess, showErrorPopup);
+
+  //фильтры
+
+  hostingType.addEventListener('input', function() {
+   filterPins(hostingType.value)
+  });
+
 })()
