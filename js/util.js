@@ -34,6 +34,7 @@
       element.remove();
       document.removeEventListener('keydown', onEscapeButClose)
     }
+    return null;
   };
 
   //удаление popup по esc

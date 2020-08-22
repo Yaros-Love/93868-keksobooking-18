@@ -38,6 +38,14 @@
   //ширина пина (.map__pin) в разметке
   var MAP_PIN_WIDTH = 50;
 
+  window.settingsForFilter = {
+    type: 'any',
+    price: 'any',
+    rooms: 'any',
+    guests: 'any',
+    features: [],
+  }
+
   //Объект на экспорт
   window.const = {
     ENTER_KEYCODE: ENTER_KEYCODE,

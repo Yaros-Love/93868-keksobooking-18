@@ -14,29 +14,38 @@
   var mapElement = window.const.mapElement;
   var addFormElement = window.const.addFormElement;
   var PIN_ARROW_HEIGHT = window.const.PIN_ARROW_HEIGHT;
-  var filterPins = window.filter.filterPins;
+  var updatePins = window.filter.updatePins;
   var setDefaultPositionPin = window.pin.setDefaultPositionPin;
   var onPinClickShowPopup = window.pin.onPinClickShowPopup;
   var hideMap = window.map.hideMap;
   var formSubmitButt = document.querySelector('.ad-form__submit');
   var inputAddress = document.querySelector('#address');
-  var hostingType = document.querySelector('#housing-type');
+  var housingType = document.querySelector('#housing-type');
+  var housingPrice = document.querySelector('#housing-price');
+  var housingRooms = document.querySelector('#housing-rooms');
+  var housingGuests = document.querySelector('#housing-guests');
+  var housingFeatures = document.querySelector('#housing-features');
 
+  //тк .reset() сбрасывает все значения, установим поля в нужное состояние
+  var resetForm = function () {
+    priceInputElement.setAttribute('min', '1000');
+    priceInputElement.setAttribute('placeholder', '1 000')
+  }
 
   var onUnLoadSucsess = function (message) {
     console.log(message)
     showSuccessPopup();
-      addFormElement.reset(); //сбрасываем значения
-      setDefaultPositionPin();//устанавливаем пин в нач положение
-      deletePopup(document.querySelector('article.popup'));//удалем карточку объявления
-      deletePins();//удаляем пины
-      mapPinMainElem.addEventListener('mousedown', onMainPinClick)//слушатель загрузки на пин
-      hideMap();
+    addFormElement.reset(); //сбрасываем значения
+    setDefaultPositionPin();//устанавливаем пин в нач положение
+    deletePopup(document.querySelector('article.popup'));//удалем карточку объявления
+    deletePins();//удаляем пины
+    mapPinMainElem.addEventListener('mousedown', onMainPinClick)//слушатель загрузки на пин
+    hideMap();
   };
 
   var onErrorUnLoad = function (message) {
     showErrorPopup(message);
-  formSubmitButt.setAttribute('disabled', true)
+    formSubmitButt.setAttribute('disabled', true)
 
   };
 
@@ -96,7 +105,7 @@
   var typeSelectElement = document.querySelector('#type');
   var priceInputElement = document.querySelector('#price');
 
-  typeSelectElement.addEventListener('change', function () {
+  typeSelectElement.addEventListener('input', function () {
     if (typeSelectElement.value === 'bungalo') {
       priceInputElement.setAttribute('min', '0');
       priceInputElement.setAttribute('placeholder', '0')
@@ -128,15 +137,43 @@
 
   addFormElement.addEventListener('submit', function (evt) {
     save(new FormData(addFormElement), onUnLoadSucsess, showErrorPopup);
+    resetForm();
     evt.preventDefault();
   });
 
-  // load(onLoadSucsess, showErrorPopup);
 
-  //фильтры
+  //слушатели, фильтры
+  housingType.addEventListener('change', function () {
+    window.settingsForFilter.type = housingType.value;
+    updatePins();
+  });
 
-  hostingType.addEventListener('input', function() {
-   filterPins(hostingType.value)
+  housingPrice.addEventListener('change', function () {
+    window.settingsForFilter.price = housingPrice.value;
+    updatePins();
+  })
+
+  housingRooms.addEventListener('change', function () {
+    window.settingsForFilter.rooms = housingRooms.value;
+    updatePins();
+  });
+
+  housingGuests.addEventListener('change', function () {
+    window.settingsForFilter.guests = housingGuests.value;
+    updatePins();
+  });
+
+  var inputsFeatures = housingFeatures.querySelectorAll('input');
+  inputsFeatures.forEach(function (input) {
+    input.addEventListener('change', function () {
+      if (input.checked == true) {
+        window.settingsForFilter.features.push(input.value);
+      };
+      if (input.checked === false) {
+       settingsForFilter.features.splice(settingsForFilter.features.indexOf(input.value), 1)
+      }
+      updatePins();
+    });
   });
 
 })()

@@ -55,18 +55,17 @@
 
         var currentPin = data[evt.currentTarget.value]; //нажатый пин - объект
         window.pin.createCard(currentPin);
-        var articlePopup = mapElement.querySelector('article.popup'); //карточка с объявлением
 
         //вешаем слушателя на esc
         document.addEventListener('keydown', function (evt) {
           onEscapeButClose(evt, function () {
-            deletePopup(articlePopup)
+            deletePopup(mapElement.querySelector('article.popup'))
           })
         });
         //вешаем слушателя на enter по кнопке .popup__close
         var popupClose = mapElement.querySelector('.popup__close');
         popupClose.addEventListener('click', function () {
-          deletePopup(articlePopup);
+          deletePopup(mapElement.querySelector('article.popup'));
         });
       })
     }
