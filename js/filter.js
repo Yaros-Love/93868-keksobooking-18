@@ -32,10 +32,10 @@
     'two guests' : 2
   }
 
-  var updatePins = function () {
+  var updatePins = window.debounce(function () {
     deletePopup(mapElement.querySelector('article.popup')) //удаляем карточку объявления
     window.pin.createPins(countPins(filterPins()));
-  };
+  });
 
   //отфильтрованные пины
   var filterPins = function () {

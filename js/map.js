@@ -120,7 +120,7 @@ var showErrorPopup = function (message) {
 //события по клику на главный пин, ф-я обработчик!
   var onMainPinClick = function () {
     showMap();
-    load(onLoadSucsess, onErrorLoad)
+    // load(onLoadSucsess, onErrorLoad)
     mapPinMainElem.removeEventListener('mousedown', onMainPinClick)
   }
 
@@ -146,8 +146,6 @@ var showErrorPopup = function (message) {
       foo();
     }
   }
-
-
 
   //перетаскивание главной метки по карте
   var dragged; //флаг перетаскивания

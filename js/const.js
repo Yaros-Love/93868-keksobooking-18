@@ -4,6 +4,7 @@
   var ENTER_KEYCODE = 13;
   var ESCAPE_KEYCODE = 27;
   var PIN_ARROW_HEIGHT = 22; //высота стрелки пина
+  var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
   var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
   var TYPE_LIVING_RUS = {
     'palace': 'Дворец',
@@ -65,5 +66,6 @@
     MAP_OVERLAY_HEIGTH: MAP_OVERLAY_HEIGTH,
     MAP_PIN_HEIGTH : MAP_PIN_HEIGTH,
     MAP_PIN_WIDTH : MAP_PIN_WIDTH,
+    FILE_TYPES : FILE_TYPES
   }
 })()
