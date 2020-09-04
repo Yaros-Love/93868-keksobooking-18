@@ -42,27 +42,27 @@
 
     mapFiltersFieldset.removeAttribute('disabled');
     addFormTextarea.removeAttribute('disabled');
-    for (var selects of mapFiltersSelects) {
-      selects.removeAttribute('disabled')
+    for (var select of mapFiltersSelects) {
+      select.removeAttribute('disabled')
     };
-    for (var fieldsets of addFormFieldsets) {
-      fieldsets.removeAttribute('disabled');
+    for (var fieldset of addFormFieldsets) {
+      fieldset.removeAttribute('disabled');
     };
-    for (var buttons of addFormButtons) {
-      buttons.removeAttribute('disabled');
+    for (var button of addFormButtons) {
+      button.removeAttribute('disabled');
     }
   };
 
   //переключение карты и форм в ytактивное состояние
   var hideMap = function () {
-    for (var selects of mapFiltersSelects) {
-      selects.setAttribute('disabled', true)
+    for (var select of mapFiltersSelects) {
+      select.setAttribute('disabled', true)
     };
-    for (var fieldsets of addFormFieldsets) {
-      fieldsets.setAttribute('disabled', true);
+    for (var fieldset of addFormFieldsets) {
+      fieldset.setAttribute('disabled', true);
     };
-    for (var buttons of addFormButtons) {
-      buttons.setAttribute('disabled', true);
+    for (var button of addFormButtons) {
+      button.setAttribute('disabled', true);
     }
     mapFiltersFieldset.setAttribute('disabled', true);
     addFormTextarea.setAttribute('disabled', true);
@@ -120,7 +120,7 @@ var showErrorPopup = function (message) {
 //события по клику на главный пин, ф-я обработчик!
   var onMainPinClick = function () {
     showMap();
-    // load(onLoadSucsess, onErrorLoad)
+    load(onLoadSucsess, onErrorLoad)
     mapPinMainElem.removeEventListener('mousedown', onMainPinClick)
   }
 
